@@ -1,9 +1,5 @@
 using UnityEngine;
-using static ManageLight;
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
-using static ManageLightAndSound;
-
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance;
@@ -50,28 +46,22 @@ public class SoundManager : MonoBehaviour
         Instance = this;
     }
 
-    public void PlaySoundClip(AudioClip audioClip, Transform transform, SoundType volume, SoundFXType soundFXType, ManageLightAndSoundSettings manageLightAndSoundSettings = null) {
+    public void PlaySoundClip(AudioClip audioClip, Transform transform, SoundType volume, SoundFXType soundFXType) {
         float volumeValue = SoundVolumeMapper.GetVolume(volume);
-        PlaySound(audioClip, transform, volumeValue, soundFXType, manageLightAndSoundSettings);
+        PlaySound(audioClip, transform, volumeValue, soundFXType);
     }
 
-    public void PlayRandomSoundClip(AudioClip[] audioClips, Transform transform, SoundType volume, SoundFXType soundFXType, ManageLightAndSoundSettings manageLightAndSoundSettings = null) {
+    public void PlayRandomSoundClip(AudioClip[] audioClips, Transform transform, SoundType volume, SoundFXType soundFXType) {
         float volumeValue = SoundVolumeMapper.GetVolume(volume);
         AudioClip audioClip = audioClips[Random.Range(0, audioClips.Length)];
-        PlaySound(audioClip, transform, volumeValue, soundFXType, manageLightAndSoundSettings);
+        PlaySound(audioClip, transform, volumeValue, soundFXType);
     }
 
-    private void PlaySound(AudioClip audioClip, Transform transform, float volume, SoundFXType soundFXType, ManageLightAndSoundSettings manageLightAndSoundSettings = null) {
+    private void PlaySound(AudioClip audioClip, Transform transform, float volume, SoundFXType soundFXType) {
         AudioSource prefab = soundFXType == SoundFXType.FX ? soundFXPrefab : ambientPrefab;
         AudioSource audioSource = Instantiate(prefab, transform.position, Quaternion.identity);
         audioSource.clip = audioClip;
         audioSource.volume = volume;
-        if(manageLightAndSoundSettings != null) {
-            ManageLightAndSound manageLightAndSoundComponent = audioSource.gameObject.AddComponent<ManageLightAndSound>();
-            manageLightAndSoundComponent.Initialize(manageLightAndSoundSettings);
-        }
-
-        ManageLightAndSound[] allAudioSources = FindObjectsOfType<ManageLightAndSound>();
         audioSource.Play();
         Destroy(audioSource.gameObject, audioClip.length);
     }
