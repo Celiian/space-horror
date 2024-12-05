@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84aeda8972e814d68896783a18d82d4e, type: 3}
+  m_Name: ZombiStats
+  m_EditorClassIdentifier: 
+  serializedStats:
+  - name: speed
+    value: 4
+  - name: slowdownFactor
+    value: 1
+  - name: attackRange
+    value: 1.5
+  - name: visionAngle
+    value: 145
+  - name: visionLength
+    value: 15
+  - name: soundDetectionRadius
+    value: 10

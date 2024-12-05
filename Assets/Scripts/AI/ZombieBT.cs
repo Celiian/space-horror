@@ -10,61 +10,91 @@ public class ZombieBT : Tree
     private ZombieStatsSO stats;
 
     [SerializeField]
+    private AudioClip[] stepSounds;
+
+    [SerializeField]
     private LayerMask visionLayerMask;
 
+    private SpriteRenderer spriteRenderer;
 
     private Rigidbody2D rb;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     protected override Node SetupTree()
     {   
-        // _root = new Selector(
-        //     new List<Node>{
-        //         new SequenceOnce( new List<Node>{
-        //             new SetData(stats.GetStats()),
-        //               new SetData(new Dictionary<string, object>{
-        //                     {"pursuingPlayer", false},
-        //                     {"playerLost", false},
-        //                     {"searchForPlayer", false},
-        //                     {"advancedSearchForPlayer", false},
-        //                     {"cannotMove", false}
-        //                 }),
-        //         }),
-        //         new Selector( new List<Node>{
-        //             new Sequence(new List<Node>{
-        //                 new ConditionIsNotMoving(rb),
-        //                 new ActionMoveOutOfTheWay(transform, rb, visionLayerMask),
-        //             }),
-        //             new Sequence( new List<Node>{
-        //                 new ConditionPlayerInRange(transform),
-        //                 new ConditionPlayerInView(transform),
-        //                 new ConditionNoWallInSight(transform, visionLayerMask),
-        //                 new ActionTargetPlayer(transform, rb),
-        //                 new CheckNotNull("target"),
-        //                 new ActionMoveToTarget(transform, rb),
-        //             }),
-        //             new Sequence( new List<Node>{
-        //                 new Selector( new List<Node>{
-        //                     new CheckBool("playerLost"),
-        //                     new CheckBool("searchForPlayer"),
-        //                     new CheckBool("advancedSearchForPlayer"),
-        //                 }),
-        //                 new SearchForPlayer(transform),
-        //                 new CheckNotNull("target"),
-        //                 new ActionMoveToTarget(transform, rb),
-        //             }),
-        //             new Sequence( new List<Node>{
-        //                 new ActionRandomPatrol(transform),
-        //                 new CheckNotNull("target"),
-        //                 new ActionMoveToTarget(transform, rb),
-        //             }),
-        //         }),
-        //     }
-        // );
+        _root = new Parallel(new List<Node>{
+            InitializationSequence(),
+            new VisualDebugs(transform),
+            MainLogic(),
+
+        });
         return _root;
+    }
+
+
+    private Node MainLogic(){
+        return new Selector(new List<Node>{
+            PursuePlayer(),
+            // InvestigateSound(),
+            SearchForPlayer(),
+            RandomPatrol(),
+        });
+    }
+
+
+    private Node PursuePlayer(){
+        return new Sequence(new List<Node>{
+            new CheckBoolFalse("stuck"),
+            new CanSeePlayer(transform, visionLayerMask),
+            new MoveTowardsTarget(transform, rb, stepSounds, "currentTargetPosition", 1.5f),
+        });
+    }
+
+    private Node InvestigateSound(){
+        return new Sequence(new List<Node>{
+        });
+    }
+
+    private Node SearchForPlayer(){
+        return new Sequence(new List<Node>{
+            new CheckNotNull("lastKnownPlayerPosition"),
+            new Selector(new List<Node>{
+                new MoveTowardsTarget(transform, rb, stepSounds, "lastKnownPlayerPosition", 1.2f),
+                new LookAroundForPlayer(transform),
+            }),
+        });
+    }
+
+    private Node RandomPatrol(){
+        return new Sequence(new List<Node>{
+            new RandomPatrol(transform),
+            new CheckNotNull("currentPatrolPoint"),
+            new MoveTowardsTarget(transform, rb, stepSounds, "currentPatrolPoint", 0.1f),
+        });
+    }
+
+    private Node InitializationSequence()
+    {
+        return new SequenceOnce(new List<Node>{
+            new SetData(stats.GetStats()),
+            new SetData(new Dictionary<string, object>{
+                {"advancedSearchForPlayer", false},
+                {"lastKnownPlayerPosition", null},
+                {"currentTargetPosition", null},
+                {"cannotGoToPlayer", false},
+                {"searchForPlayer", false},
+                {"pursuingPlayer", false},
+                {"playerInSight", false},
+                {"cannotMove", false},
+                {"playerLost", false},
+                {"stuck", false},
+                {"debug", true}
+            }),
+        });
     }
 }
