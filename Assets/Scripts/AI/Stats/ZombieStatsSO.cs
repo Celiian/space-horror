@@ -22,7 +22,8 @@ public sealed class ZombieStatsSO : ScriptableObject
         new Stat { name = "visionAngle", value = 180f },
         new Stat { name = "visionLength", value = 15f },
 
-		new Stat { name = "soundDetectionRadius", value = 10f },
+		new Stat { name = "hearingDetectionRadius", value = 10f },
+		new Stat { name = "hearingVolumeThreshold", value = 0.5f },
         
 	};
 

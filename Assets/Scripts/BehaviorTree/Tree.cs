@@ -12,7 +12,7 @@ namespace BehaviorTree
         }
 
         private void Update()
-        {
+        {   
             if(_root == null) return;
             _root.Evaluate();
         }

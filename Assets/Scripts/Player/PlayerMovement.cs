@@ -1,3 +1,4 @@
+using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 using static SoundManager;
 
@@ -9,13 +10,23 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float sprintMultiplier = 1.75f;
     [SerializeField] private AudioClip[] stepSounds;
+    [SerializeField] private PlayerAnimator playerAnimator;
+    
+    public Vector2 movementDirection;
+    public bool isMoving = false;
 
     public float hearingRadius = 15;
     private float stepTimer = 0;
-    private float minMovementThreshold = 0.1f; // Minimum movement speed to trigger steps
+    private float minMovementThreshold = 0.1f;
 
     private void Awake() {
         Instance = this;
+    }
+
+    private void Update() {
+        HandleMovement();
+        HandleAnimation();
+        HandleFootstepSounds();
     }
 
     private Vector2 GetInputMovement() {
@@ -28,12 +39,27 @@ public class PlayerMovement : MonoBehaviour
         return inputVector * currentSpeed;
     }
 
-    private void Update() {
+    private void HandleMovement() {
         Vector2 movement = GetInputMovement();
         rb.velocity = movement;
+        movementDirection = movement;
+        isMoving = movement.magnitude > minMovementThreshold;
+    }
 
-        // Handle footstep sounds
-        if (rb.velocity.magnitude > minMovementThreshold) {
+    private void HandleAnimation() {
+        if (isMoving) {
+            if (playerAnimator.ShouldAnimateAgain() || playerAnimator.currentAnimation != playerAnimator.GetAnimationName("Walk", "WalkUp", "WalkDown")) {
+                playerAnimator.PlayAnimation(playerAnimator.GetAnimationName("Walk", "WalkUp", "WalkDown"));
+            }
+        } else {
+            if (playerAnimator.ShouldAnimateAgain() || playerAnimator.currentAnimation != playerAnimator.GetAnimationName("Idle", "IdleUp", "IdleDown")) {
+                playerAnimator.PlayAnimation(playerAnimator.GetAnimationName("Idle", "IdleUp", "IdleDown"));
+            }
+        }
+    }
+
+    private void HandleFootstepSounds() {
+        if (isMoving) {
             stepTimer += Time.deltaTime;
             
             float currentStepInterval = Input.GetKey(KeyCode.LeftShift) 
@@ -41,14 +67,20 @@ public class PlayerMovement : MonoBehaviour
                 : SoundPropagationManager.Instance.stepInterval;
 
             if (stepTimer >= currentStepInterval) {
-                // Propagate sound at player position
-                SoundPropagationManager.Instance.PropagateSound(transform.position, SoundOrigin.PLAYER);
+                SoundPropagationManager.Instance.PropagateSound(transform.position, SoundOrigin.PLAYER, 0.8f);
                 SoundManager.Instance.PlayRandomSoundClip(stepSounds, transform, SoundType.FOOTSTEPS, SoundFXType.FX);
-                stepTimer = 0; // Reset timer
+                stepTimer = 0;
             }
         } else {
-            // Reset timer when not moving
             stepTimer = 0;
         }
+    }
+
+    public int GetDirectionInt() {
+        if (rb.velocity.y > 0) return 0;
+        if (rb.velocity.y < 0) return 1;
+        if (rb.velocity.x < 0) return 2;
+        if (rb.velocity.x > 0) return 3;
+        return 0;
     }
 }

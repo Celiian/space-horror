@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34313853741cf464bbb0fb171e7931eb, type: 3}
+  m_Name: Red_combi
+  m_EditorClassIdentifier: 
+  animations:
+  - name: Idle
+    duration: 0.16666667
+    isLooping: 1
+    hash: 0
+  - name: WalkDown
+    duration: 0.5
+    isLooping: 1
+    hash: 0
+  - name: WalkUp
+    duration: 0.5
+    isLooping: 1
+    hash: 0
+  - name: Walk
+    duration: 0.5
+    isLooping: 1
+    hash: 0
+  - name: IdleDown
+    duration: 0.16666667
+    isLooping: 1
+    hash: 0
+  - name: IdleUp
+    duration: 0.16666667
+    isLooping: 1
+    hash: 0
+  animatorController: {fileID: 9100000, guid: 08f2614d04f7c4f44b5d96c87d798a8a, type: 2}

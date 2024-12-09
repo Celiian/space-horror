@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using BehaviorTree;
 using UnityEngine;
-using Tree = BehaviorTree.Tree;
-
+using Tree = BehaviorTree.Tree; 
 
 public class ZombieBT : Tree
 {
@@ -14,6 +13,11 @@ public class ZombieBT : Tree
 
     [SerializeField]
     private LayerMask visionLayerMask;
+
+    [SerializeField]
+    private EnemyAnimator enemyAnimator;
+
+
 
     private SpriteRenderer spriteRenderer;
 
@@ -33,6 +37,7 @@ public class ZombieBT : Tree
             MainLogic(),
 
         });
+
         return _root;
     }
 
@@ -51,12 +56,17 @@ public class ZombieBT : Tree
         return new Sequence(new List<Node>{
             new CheckBoolFalse("stuck"),
             new CanSeePlayer(transform, visionLayerMask),
-            new MoveTowardsTarget(transform, rb, stepSounds, "currentTargetPosition", 1.5f),
+            new MoveTowardsTarget(transform, rb, stepSounds, "currentTargetPosition", 1.5f, enemyAnimator),
         });
     }
 
     private Node InvestigateSound(){
         return new Sequence(new List<Node>{
+            new InvestigateSound(transform),
+            new CheckNotNull("soundPosition"),
+            new MoveToSoundHeard(transform),
+            new MoveTowardsTarget(transform, rb, stepSounds, "currentSoundTargetPosition", 0.1f, enemyAnimator),
+            new LookAroundForPlayer(transform),
         });
     }
 
@@ -64,7 +74,7 @@ public class ZombieBT : Tree
         return new Sequence(new List<Node>{
             new CheckNotNull("lastKnownPlayerPosition"),
             new Selector(new List<Node>{
-                new MoveTowardsTarget(transform, rb, stepSounds, "lastKnownPlayerPosition", 1.2f),
+                new MoveTowardsTarget(transform, rb, stepSounds, "lastKnownPlayerPosition", 0.1f,enemyAnimator, 1.2f),
                 new LookAroundForPlayer(transform),
             }),
         });
@@ -74,7 +84,7 @@ public class ZombieBT : Tree
         return new Sequence(new List<Node>{
             new RandomPatrol(transform),
             new CheckNotNull("currentPatrolPoint"),
-            new MoveTowardsTarget(transform, rb, stepSounds, "currentPatrolPoint", 0.1f),
+            new MoveTowardsTarget(transform, rb, stepSounds, "currentPatrolPoint", 0.1f, enemyAnimator),
         });
     }
 
@@ -83,6 +93,8 @@ public class ZombieBT : Tree
         return new SequenceOnce(new List<Node>{
             new SetData(stats.GetStats()),
             new SetData(new Dictionary<string, object>{
+                {"currentSoundTargetPosition", null},
+                {"movementDirection", Vector3.zero},
                 {"advancedSearchForPlayer", false},
                 {"lastKnownPlayerPosition", null},
                 {"currentTargetPosition", null},

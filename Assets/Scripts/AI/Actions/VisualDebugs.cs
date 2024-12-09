@@ -15,7 +15,6 @@ public class VisualDebugs : Node
         if (debug){
             DrawVisionCone();
             DrawLineToTarget();
-            VisualizeTarget();
         }
         return NodeState.FAILURE;
     }

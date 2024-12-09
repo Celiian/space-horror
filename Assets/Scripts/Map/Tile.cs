@@ -22,7 +22,7 @@ public class Tile
     public TileType type;
     public Tilemap tilemap;
     public List<SoundData> soundSources = new List<SoundData>();
-
+    public bool hasBeenSeen = false;
     public Tile(Vector3Int position, TileType type, Tilemap tilemap)
     {
         this.tilemap = tilemap;
@@ -46,7 +46,7 @@ public class Tile
                 break;
             case TileType.WALL:
                 if (soundLevel > 0)
-                    color = new Color(0.15f, 0.15f, 0.15f);
+                    color = new Color(0.35f, 0.35f, 0.35f);
                 break;
         }
 
@@ -61,11 +61,6 @@ public class Tile
 
     public void UpdateSoundLevel(float newSoundLevel, SoundOrigin origin)
     {
-        if(type == TileType.WALL)
-        {
-            return;
-        }
-
         SoundData soundData = soundSources.Find(soundData => soundData.origin == origin);
         if (soundData != null)
         {
@@ -76,6 +71,9 @@ public class Tile
         {
             soundSources.Add(new SoundData(newSoundLevel, origin));
         }
+
+        if(origin == SoundOrigin.PLAYER)
+            hasBeenSeen = true;
     }
 }
 
@@ -91,5 +89,6 @@ public enum TileType
 public enum SoundOrigin
 {
     PLAYER,
-    ZOMBIE
+    ZOMBIE,
+    INTERACTIBLE
 }

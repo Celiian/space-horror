@@ -12,7 +12,8 @@ public class MoveTowardsTarget : Node
     private float distanceThreshold = 0.1f;
     private float minMovementThreshold = 0.1f;
     private float speedMultiplier = 1;
-    public MoveTowardsTarget(Transform transform, Rigidbody2D rb, AudioClip[] stepSounds, string currentTargetPositionKey, float distanceThreshold, float speedMultiplier = 1)
+    private EnemyAnimator enemyAnimator;
+    public MoveTowardsTarget(Transform transform, Rigidbody2D rb, AudioClip[] stepSounds, string currentTargetPositionKey, float distanceThreshold, EnemyAnimator enemyAnimator, float speedMultiplier = 1)
     {
         this.transform = transform;
         this.rb = rb;
@@ -20,6 +21,7 @@ public class MoveTowardsTarget : Node
         this.currentTargetPositionKey = currentTargetPositionKey;
         this.distanceThreshold = distanceThreshold;
         this.speedMultiplier = speedMultiplier;
+        this.enemyAnimator = enemyAnimator;
     }
 
     public override NodeState Evaluate()
@@ -39,17 +41,20 @@ public class MoveTowardsTarget : Node
         Vector3 direction = (targetPosition - transform.position).normalized;
         float speed = (float)GetData("speed") * speedMultiplier;
         float distanceToTarget = Vector3.Distance(transform.position, targetPosition);
-
+        SetTopParentData("movementDirection", direction);
+        
         if (distanceToTarget > distanceThreshold)
         {
+            if(enemyAnimator.ShouldAnimateAgain())
+                enemyAnimator.PlayAnimation(enemyAnimator.GetAnimationName("Walk", "WalkUp", "WalkDown"));
             MoveCharacter(direction, speed);
             HandleFootstepSounds();
-            SetTopParentData("stuck", false);
             return NodeState.SUCCESS;
         }
         else
         {
-            SetTopParentData("stuck", true);
+            if(enemyAnimator.ShouldAnimateAgain())
+                enemyAnimator.PlayAnimation(enemyAnimator.GetAnimationName("Idle", "IdleUp", "IdleDown"));
             StopCharacter();
             return NodeState.FAILURE;
         }
@@ -58,8 +63,8 @@ public class MoveTowardsTarget : Node
     private void MoveCharacter(Vector3 direction, float speed)
     {
         rb.velocity = direction * speed;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, 0, angle);
+        // float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        // transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
     private void StopCharacter()
@@ -76,7 +81,7 @@ public class MoveTowardsTarget : Node
             if (stepTimer >= SoundPropagationManager.Instance.stepInterval)
             {
                 // Propagate sound at current position
-                SoundPropagationManager.Instance.PropagateSound(transform.position, SoundOrigin.ZOMBIE);
+                SoundPropagationManager.Instance.PropagateSound(transform.position, SoundOrigin.ZOMBIE, 0.8f);
                 SoundManager.Instance.PlayRandomSoundClip(stepSounds, transform, SoundType.FOOTSTEPS, SoundFXType.FX);
 
                 stepTimer = 0; // Reset timer

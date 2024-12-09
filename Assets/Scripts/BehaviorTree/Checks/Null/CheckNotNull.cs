@@ -12,6 +12,7 @@ public class CheckNotNull : Node {
         if (conditionValue == null ) {
             return NodeState.FAILURE;
         }
+        
         return NodeState.SUCCESS;
     }
 }

@@ -14,14 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedStats:
   - name: speed
-    value: 4
+    value: 2
   - name: slowdownFactor
     value: 1
   - name: attackRange
     value: 1.5
   - name: visionAngle
-    value: 145
+    value: 180
   - name: visionLength
     value: 15
-  - name: soundDetectionRadius
+  - name: hearingDetectionRadius
     value: 10
+  - name: hearingVolumeThreshold
+    value: 0.5

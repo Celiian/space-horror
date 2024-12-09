@@ -30,6 +30,7 @@ public class LookAroundForPlayer : Node
         if(firstRotationFinished && totalRotation <= -45f){
             firstRotationFinished = false;
             SetTopParentData("lastKnownPlayerPosition", null);
+            SetTopParentData("soundPosition", null);
             return NodeState.FAILURE;
         }
 

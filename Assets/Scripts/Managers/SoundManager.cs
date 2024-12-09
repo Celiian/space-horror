@@ -25,15 +25,15 @@ public class SoundManager : MonoBehaviour
 
     public static class SoundVolumeMapper {
         private static readonly Dictionary<SoundType, float> soundVolumeMap = new Dictionary<SoundType, float> {
-            { SoundType.AMBIENT, 0.1f },
-            { SoundType.FX, 0.4f },
-            { SoundType.LOUD_FX, 0.8f },
-            { SoundType.MUSIC, 0.5f },
-            { SoundType.FOOTSTEPS, 0.1f },
-            { SoundType.MONSTER, 0.6f },
-            { SoundType.WHISPERS, 0.15f },
-            { SoundType.BREATHING, 0.2f },
-            { SoundType.DOOR_CREAK, 0.25f }
+            { SoundType.AMBIENT, 0.01f },
+            { SoundType.FX, 0.005f },
+            { SoundType.LOUD_FX, 0.08f },
+            { SoundType.MUSIC, 0.05f },
+            { SoundType.FOOTSTEPS, 0.005f },
+            { SoundType.MONSTER, 0.06f },
+            { SoundType.WHISPERS, 0.015f },
+            { SoundType.BREATHING, 0.02f },
+            { SoundType.DOOR_CREAK, 0.025f }
         };
 
         public static float GetVolume(SoundType soundType) {
