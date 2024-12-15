@@ -6,6 +6,8 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioSource soundFXPrefab;
     [SerializeField] private AudioSource ambientPrefab;
 
+    private List<AudioSource> currentlyPlayingSound = new List<AudioSource>();
+
     public enum SoundFXType {
         FX,
         AMBIENT
@@ -46,11 +48,11 @@ public class SoundManager : MonoBehaviour
         Instance = this;
     }
 
-    public void PlaySoundClip(AudioClip audioClip, Transform transform, SoundType volume, SoundFXType soundFXType, float? distanceMax = null) {
+    public AudioSource PlaySoundClip(AudioClip audioClip, Transform transform, SoundType volume, SoundFXType soundFXType,bool looped = false, float?  distanceMax = null, bool followPlayer = false) {
         distanceMax ??= PlayerMovement.Instance.hearingRadius;
         float distance = CalcUtils.DistanceToTarget(transform.position, PlayerMovement.Instance.transform.position);
         if(distance > distanceMax * 1.3f)
-            return;
+            return null;
             
         float volumeValue = SoundVolumeMapper.GetVolume(volume);
         // Apply distance-based attenuation between 0.67x and 1x of max distance
@@ -58,7 +60,19 @@ public class SoundManager : MonoBehaviour
             float attenuation = 1f - ((distance - distanceMax.Value) / (distanceMax.Value * 0.5f));
             volumeValue *= attenuation;
         }
-        PlaySound(audioClip, transform, volumeValue, soundFXType);
+
+        return looped ? PlayLoopedSound(audioClip, transform, volumeValue, soundFXType) : PlaySound(audioClip, transform, volumeValue, soundFXType, followPlayer);
+    }
+
+
+    public AudioSource PlayLoopedSound(AudioClip audioClip, Transform transform, float volume, SoundFXType soundFXType) {
+        AudioSource prefab = soundFXType == SoundFXType.FX ? soundFXPrefab : ambientPrefab;
+        AudioSource audioSource = Instantiate(prefab, transform.position, Quaternion.identity);
+        audioSource.clip = audioClip;
+        audioSource.volume = volume;
+        audioSource.loop = true;
+        audioSource.Play();
+        return audioSource;
     }
 
     public void PlayRandomSoundClip(AudioClip[] audioClips, Transform transform, SoundType volume, SoundFXType soundFXType, float? distanceMax = null) {
@@ -77,12 +91,27 @@ public class SoundManager : MonoBehaviour
         PlaySound(audioClip, transform, volumeValue, soundFXType);
     }
 
-    private void PlaySound(AudioClip audioClip, Transform transform, float volume, SoundFXType soundFXType) {
+
+    private AudioSource PlaySound(AudioClip audioClip, Transform transform, float volume, SoundFXType soundFXType, bool followPlayer = false) {
         AudioSource prefab = soundFXType == SoundFXType.FX ? soundFXPrefab : ambientPrefab;
         AudioSource audioSource = Instantiate(prefab, transform.position, Quaternion.identity);
         audioSource.clip = audioClip;
         audioSource.volume = volume;
         audioSource.Play();
+        if(followPlayer) {
+            currentlyPlayingSound.Add(audioSource);
+        }
         Destroy(audioSource.gameObject, audioClip.length);
+        return null;
+    }
+
+    private void Update() {
+        foreach(var audioSource in currentlyPlayingSound) {
+            if(audioSource == null) {
+                currentlyPlayingSound.Remove(audioSource);
+                continue;
+            }
+            audioSource.transform.position = PlayerMovement.Instance.transform.position;
+        }
     }
 }

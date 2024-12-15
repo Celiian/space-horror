@@ -2,8 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using BehaviorTree;
-using Tree = BehaviorTree.Tree;
-using Unity.VisualScripting;
 
 public class DoorInteractible : IInteractible
 {
@@ -14,7 +12,7 @@ public class DoorInteractible : IInteractible
     [SerializeField] private AudioClip openDoorSound;
     [SerializeField] private AudioClip closeDoorSound;
 
-    private List<Tree> enemiesClose = new List<Tree>();
+    private List<Zombie> enemiesClose = new List<Zombie>();
 
     private List<Vector3> positions = new List<Vector3>();
 
@@ -108,7 +106,7 @@ public class DoorInteractible : IInteractible
         float distance = Vector2.Distance(transform.position, other.transform.position);
          if (other.CompareTag("Enemy"))
         {
-            enemiesClose.Add(other.GetComponent<Tree>());
+            enemiesClose.Add(other.GetComponent<Zombie>());
         }
     }
 
@@ -124,15 +122,15 @@ public class DoorInteractible : IInteractible
         if(enemiesClose.Count == 0)
             return;
 
-        foreach(Tree tree in enemiesClose)
+        foreach(Zombie zombie in enemiesClose)
         {
-            float distance = Vector2.Distance(transform.position, tree.transform.position);
+            float distance = Vector2.Distance(transform.position, zombie.transform.position);
             if(distance > 1.5f)
                 continue;
             if(toggleableOptions["isClosed"])
                 OpenDoor();
             StartCoroutine(CloseDoorCoroutine());
-            enemiesClose.Remove(tree);
+            enemiesClose.Remove(zombie);
             break;
         }
     }

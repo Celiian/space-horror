@@ -49,7 +49,7 @@ public class PlayerMovement : MonoBehaviour
     private void HandleAnimation() {
         if (isMoving) {
             if (playerAnimator.ShouldAnimateAgain() || playerAnimator.currentAnimation != playerAnimator.GetAnimationName("Walk", "WalkUp", "WalkDown")) {
-                playerAnimator.PlayAnimation(playerAnimator.GetAnimationName("Walk", "WalkUp", "WalkDown"));
+                playerAnimator.PlayAnimation(playerAnimator.GetAnimationName("Walk", "WalkUp", "WalkDown"), Input.GetKey(KeyCode.LeftShift) ? sprintMultiplier : 1f);
             }
         } else {
             if (playerAnimator.ShouldAnimateAgain() || playerAnimator.currentAnimation != playerAnimator.GetAnimationName("Idle", "IdleUp", "IdleDown")) {

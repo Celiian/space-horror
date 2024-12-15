@@ -4,36 +4,36 @@ using UnityEngine;
 public class LookAroundForPlayer : Node
 {
     private Transform transform;
-    private float rotationSpeed = 90f;
-    private bool firstRotationFinished = false;
-    private float totalRotation = 0f;
-
-    public LookAroundForPlayer(Transform transform)
+    private SpriteRenderer renderer;
+    private float waitTime = 0.5f;
+    private float timer = 0f;
+    private bool isFlipping = false;
+        
+    public LookAroundForPlayer(Transform transform, SpriteRenderer renderer)
     {
         this.transform = transform;
+        this.renderer = renderer;
     }
 
     public override NodeState Evaluate()
     {
-        float rotationThisFrame = rotationSpeed * Time.deltaTime * (firstRotationFinished ? -1 : 1);
-        float currentRotation = transform.rotation.eulerAngles.z;
-        float targetRotation = currentRotation + rotationThisFrame;
+        timer += Time.deltaTime;
 
-        transform.rotation = Quaternion.Euler(0, 0, targetRotation);
-        totalRotation += rotationThisFrame;
-
-
-        if(!firstRotationFinished && totalRotation >= 45f){
-            firstRotationFinished = true;
+        if(timer >= waitTime){
+            if(isFlipping){
+                renderer.flipX = !renderer.flipX;
+                SetTopParentData("lastKnownPlayerPosition", null);
+                SetTopParentData("soundPosition", null);
+                return NodeState.FAILURE;
+            }
+            
+            renderer.flipX = !renderer.flipX;
+            timer = 0f;
+            isFlipping = true;
         }
 
-        if(firstRotationFinished && totalRotation <= -45f){
-            firstRotationFinished = false;
-            SetTopParentData("lastKnownPlayerPosition", null);
-            SetTopParentData("soundPosition", null);
-            return NodeState.FAILURE;
-        }
+        
 
-        return NodeState.RUNNING;
+        return NodeState.SUCCESS;
     }
 }

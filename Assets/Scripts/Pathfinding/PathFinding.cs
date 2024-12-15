@@ -2,12 +2,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.Tilemaps;
+using Sirenix.OdinInspector;
 
 public class PathFinding : MonoBehaviour
 {
     public static PathFinding Instance { get; private set; }
     public Tilemap tilemap;
+    public Tilemap tilemapObstacles;
     public Dictionary<Vector3Int, TileNode> tileNodes = new Dictionary<Vector3Int, TileNode>();
+    
+    [SerializeField]
+    private Dictionary<Vector3Int, TileNode> tileNodesObstacles = new Dictionary<Vector3Int, TileNode>();
+
+    [Button]
+    public void FillObstacles(){
+        tileNodesObstacles.Clear();
+        Decoration[] decorations = FindObjectsOfType<Decoration>();
+        foreach(Decoration decoration in decorations){
+            foreach(GameObject deco in decoration.positions){
+                tileNodesObstacles[tilemap.WorldToCell(deco.transform.position)] = new TileNode { position = tilemap.WorldToCell(deco.transform.position), tilemap = tilemap };
+            }
+        }
+    }
 
     private void Awake() { 
         Instance = this;
@@ -15,9 +31,10 @@ public class PathFinding : MonoBehaviour
     }
 
     private void InitializeTileNodes() {
+        FillObstacles();
         // First, create all nodes
         foreach (Vector3Int position in tilemap.cellBounds.allPositionsWithin) {
-            if (tilemap.HasTile(position)) {
+            if (tilemap.HasTile(position) && !tilemapObstacles.HasTile(position) && !tileNodesObstacles.ContainsKey(position)) {
                 TileNode node = new TileNode {
                     tilemap = tilemap,
                     position = position,
@@ -26,19 +43,59 @@ public class PathFinding : MonoBehaviour
                     previous = null
                 };
                 tileNodes[position] = node;
-            }
+            }    
         }
         
+    
         // Then, set neighbors after all nodes are created
         foreach (var node in tileNodes.Values) {
             SetNodeNeighbours(node);
         }
     }
 
-    public TileNode FindNodeCloseToPosition(Vector3 position){
+    public void AddObstacle(Vector3Int position){
+        if(tileNodes.ContainsKey(position)){
+            tileNodes.Remove(position);
+        }
+    }
+
+    public TileNode FindNodeCloseToPosition(Vector3 position) {
         Vector3Int cellPosition = tilemap.WorldToCell(position);
-        var node = tileNodes.ContainsKey(cellPosition) ? tileNodes[cellPosition] : null;
-        return node;
+        
+        // If the node exists at the exact position, return it
+        if (tileNodes.ContainsKey(cellPosition)) {
+            return tileNodes[cellPosition];
+        }
+
+        // Use a queue for BFS to explore neighbors
+        Queue<Vector3Int> positionsToCheck = new Queue<Vector3Int>();
+        HashSet<Vector3Int> visitedPositions = new HashSet<Vector3Int>();
+        positionsToCheck.Enqueue(cellPosition);
+        visitedPositions.Add(cellPosition);
+
+        // Directions to check: up, down, left, right
+        Vector3Int[] directions = { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
+
+        while (positionsToCheck.Count > 0) {
+            Vector3Int currentPosition = positionsToCheck.Dequeue();
+
+            foreach (var direction in directions) {
+                Vector3Int neighborPosition = currentPosition + direction;
+
+                if (!visitedPositions.Contains(neighborPosition)) {
+                    visitedPositions.Add(neighborPosition);
+
+                    if (tileNodes.ContainsKey(neighborPosition)) {
+                        return tileNodes[neighborPosition];
+                    }
+
+                    positionsToCheck.Enqueue(neighborPosition);
+                }
+            }
+        }
+
+        // Return null if no node is found
+        return null;
     }
 
     public TileNode FindNodeAtMinimumDistance(Vector3 position, float distance){
@@ -145,7 +202,6 @@ public class PathFinding : MonoBehaviour
     }
 
     private void SetNodeNeighbours(TileNode node){
-
         var upNeighbour = tileNodes.ContainsKey(node.position + Vector3Int.up) ? tileNodes[node.position + Vector3Int.up] : null;
         var downNeighbour = tileNodes.ContainsKey(node.position + Vector3Int.down) ? tileNodes[node.position + Vector3Int.down] : null;
         var leftNeighbour = tileNodes.ContainsKey(node.position + Vector3Int.left) ? tileNodes[node.position + Vector3Int.left] : null;

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2480290212458896073}
   - component: {fileID: 5235241435657618026}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7467815047507474931}
   - component: {fileID: 653867441426016820}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Closed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -173,7 +173,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7156719941834859786}
   - component: {fileID: 8597099880125320106}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -257,7 +257,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7954573492120347919}
   - component: {fileID: 5871294942857817784}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -341,7 +341,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4046152886490453625}
   - component: {fileID: 2662183396037627327}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -427,9 +427,9 @@ GameObject:
   - component: {fileID: 2135493987150875309}
   - component: {fileID: 1765832943455054132}
   - component: {fileID: 4942847778138093249}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LateralDoor
-  m_TagString: Untagged
+  m_TagString: Object
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -553,6 +553,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65db6d9ee046e477faf3e6e659fcc92d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  positions: []
 --- !u!1 &6469009295854599053
 GameObject:
   m_ObjectHideFlags: 0
@@ -565,7 +566,7 @@ GameObject:
   - component: {fileID: 2911283150991237771}
   - component: {fileID: 7437927961170953717}
   - component: {fileID: 4131964152048533466}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: InteractibleDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -666,7 +667,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6909259376479094817}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Opened
   m_TagString: Untagged
   m_Icon: {fileID: 0}

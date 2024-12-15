@@ -36,10 +36,11 @@ public class SoundPropagationManager : MonoBehaviour
             return;
         }
         _instance = this;
+        
+        tilesByPosition = new Dictionary<Vector3Int, Tile>();
+        populateTiles();
     }
 
-    [FoldoutGroup("References")]
-    [SerializeField] private Transform player;
     [FoldoutGroup("References")]
     [SerializeField] private Grid grid;
     [FoldoutGroup("References")]
@@ -60,17 +61,30 @@ public class SoundPropagationManager : MonoBehaviour
     [FoldoutGroup("Sound Settings")]
     [SerializeField] public float stepInterval = 0.8f;
 
+    [FoldoutGroup("Debug")]
+    [SerializeField] private bool debug = false;
+
     public List<Vector3Int> walls = new List<Vector3Int>();
     private List<Tile> tiles = new List<Tile>();
     public HashSet<Tile> activeTiles = new HashSet<Tile>();
     private Dictionary<Vector3Int, Tile> tilesByPosition;
     private float lastUpdateTime = 0f;
 
-    private void Start()
-    {
-        tilesByPosition = new Dictionary<Vector3Int, Tile>();
-        populateTiles();
-    }
+    private void Start() {
+        foreach (var kvp in tilesByPosition)
+        {
+            kvp.Value.paint();
+        }
+        foreach (Vector3Int tilePosition in wallTilemap.cellBounds.allPositionsWithin)
+        {
+            var tile = new Tile(tilePosition, TileType.WALL, wallTilemap);
+            if (!tilesByPosition.ContainsKey(tilePosition))
+            {
+                tile.paint();
+            }
+        }
+    }  
+
 
     private void populateTiles()
     {
@@ -80,7 +94,6 @@ public class SoundPropagationManager : MonoBehaviour
             if (!floorTilemap.HasTile(tilePosition)) continue;
             
             var tile = new Tile(tilePosition, TileType.FLOOR, floorTilemap);
-            tile.paint();
             tiles.Add(tile);
             tilesByPosition[tilePosition] = tile;
         }
@@ -92,7 +105,6 @@ public class SoundPropagationManager : MonoBehaviour
 
             var tile = new Tile(tilePosition, TileType.WALL, wallTilemap);
             bool hasFloorNeighbor = false;
-            tile.paint();
             
             foreach (Tile neighbor in GetNeighbors(tile))
             {
@@ -136,7 +148,7 @@ public class SoundPropagationManager : MonoBehaviour
                         var soundLevel = soundData.soundLevel;
                         
                         float timeSinceUpdate = Time.time - soundData.lastSoundUpdate;
-                        float decayFactor = Mathf.Exp(-timeSinceUpdate * 0.3f);
+                        float decayFactor = Mathf.Exp(-timeSinceUpdate * 0.4f);
                         float newSoundLevel = soundLevel * decayFactor;
 
                         updatedSoundSources.Add(new SoundData(newSoundLevel, soundData.origin));
@@ -156,7 +168,7 @@ public class SoundPropagationManager : MonoBehaviour
                 }
             }
            
-            tile.paint();
+            tile.paint(debug);
             
         }
     }
@@ -222,6 +234,31 @@ public class SoundPropagationManager : MonoBehaviour
             tile.position + Vector3Int.up + Vector3Int.left,
             tile.position + Vector3Int.down + Vector3Int.right,
             tile.position + Vector3Int.down + Vector3Int.left
+        };
+
+        foreach (Vector3Int pos in positions)
+        {
+            if (tilesByPosition.TryGetValue(pos, out Tile neighbor))
+            {
+                neighbors.Add(neighbor);
+            }
+        }
+
+        return neighbors;
+    }
+
+    public List<Tile> GetNeighbors(Vector3Int tile)
+    {
+        List<Tile> neighbors = new List<Tile>();
+        Vector3Int[] positions = {
+            tile + Vector3Int.up,
+            tile + Vector3Int.down,
+            tile + Vector3Int.left,
+            tile + Vector3Int.right,
+            tile + Vector3Int.up + Vector3Int.right,
+            tile + Vector3Int.up + Vector3Int.left,
+            tile + Vector3Int.down + Vector3Int.right,
+            tile + Vector3Int.down + Vector3Int.left
         };
 
         foreach (Vector3Int pos in positions)

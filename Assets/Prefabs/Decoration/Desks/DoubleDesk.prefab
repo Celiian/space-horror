@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8930154678171650587}
   - component: {fileID: 4143339469857712711}
   - component: {fileID: 3286627366719816599}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: scifi_items2_8 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -116,7 +116,7 @@ GameObject:
   m_Component:
   - component: {fileID: 187750187443720497}
   - component: {fileID: 2693818749872143711}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: scifi_items_37 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -190,6 +190,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &843707343913527919
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5881434642044885036}
+  m_Layer: 8
+  m_Name: TilesPositions (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5881434642044885036
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 843707343913527919}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.02, y: -0.03, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7329491945510551991}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3026542786772519952
 GameObject:
   m_ObjectHideFlags: 0
@@ -200,7 +231,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8370274385138543370}
   - component: {fileID: 1123368851983972266}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: scifi_items_67
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -285,7 +316,7 @@ GameObject:
   - component: {fileID: 4582402940113777946}
   - component: {fileID: 1995670901333057759}
   - component: {fileID: 8801202296023915424}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: scifi_items2_8
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -301,7 +332,7 @@ Transform:
   m_GameObject: {fileID: 3568434867478539907}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.97, y: 0.84, z: 0}
+  m_LocalPosition: {x: 0.975, y: 0.784, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -380,6 +411,37 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &4644295680011058318
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4651159707066204920}
+  m_Layer: 8
+  m_Name: TilesPositions
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4651159707066204920
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4644295680011058318}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.9, y: -0.03, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7329491945510551991}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5642209216828518439
 GameObject:
   m_ObjectHideFlags: 0
@@ -390,7 +452,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7367006969940926160}
   - component: {fileID: 4248728607186286041}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: scifi_items_65
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -474,7 +536,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9158361189930165501}
   - component: {fileID: 7850324368523126062}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: scifi_items_66
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -558,7 +620,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3243126562554185472}
   - component: {fileID: 4114978070014380246}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: scifi_items_37
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -643,9 +705,9 @@ GameObject:
   - component: {fileID: 7329491945510551991}
   - component: {fileID: 5316162513590728554}
   - component: {fileID: 1696880182915850038}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DoubleDesk
-  m_TagString: Untagged
+  m_TagString: Object
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -670,6 +732,9 @@ Transform:
   - {fileID: 187750187443720497}
   - {fileID: 4582402940113777946}
   - {fileID: 8930154678171650587}
+  - {fileID: 4651159707066204920}
+  - {fileID: 5881434642044885036}
+  - {fileID: 8951922803183053711}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &5316162513590728554
@@ -729,3 +794,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65db6d9ee046e477faf3e6e659fcc92d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  positions:
+  - {fileID: 4644295680011058318}
+  - {fileID: 843707343913527919}
+  - {fileID: 8092008402615554928}
+--- !u!1 &8092008402615554928
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8951922803183053711}
+  m_Layer: 8
+  m_Name: TilesPositions (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8951922803183053711
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8092008402615554928}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.04, y: -0.03, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7329491945510551991}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

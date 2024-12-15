@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5510784288793577357}
   - component: {fileID: 3935962160572088175}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Opened
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 3832473855808285922}
   - component: {fileID: 5732084770004049943}
   - component: {fileID: 3609084329593580047}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: InteractibleDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,7 +199,7 @@ GameObject:
   - component: {fileID: 176197541787863590}
   - component: {fileID: 1572719902211342028}
   - component: {fileID: 1429888047763555068}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Closed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -330,9 +330,9 @@ GameObject:
   - component: {fileID: 6129622950173171989}
   - component: {fileID: 8147173542811281532}
   - component: {fileID: 4406053399035482944}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Door
-  m_TagString: Untagged
+  m_TagString: Object
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -456,3 +456,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65db6d9ee046e477faf3e6e659fcc92d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  positions: []

@@ -48,6 +48,8 @@ public class GroundDecoration : MonoBehaviour
         return soundLevel;
     }
 
+    
+
     private Color DetermineColor(float soundLevel)
     {
         return Color.Lerp(Color.black, Color.white, soundLevel);

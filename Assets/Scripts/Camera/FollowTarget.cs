@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class FollowTarget : MonoBehaviour
@@ -10,4 +11,10 @@ public class FollowTarget : MonoBehaviour
         Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
         transform.position = smoothedPosition;
     }
+
+    [Button]
+    public void CenterOnTarget(){
+        transform.position = target.position;
+    }
 }
+

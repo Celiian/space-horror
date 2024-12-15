@@ -49,15 +49,16 @@ public class MoveTowardsTarget : Node
                 enemyAnimator.PlayAnimation(enemyAnimator.GetAnimationName("Walk", "WalkUp", "WalkDown"));
             MoveCharacter(direction, speed);
             HandleFootstepSounds();
-            return NodeState.SUCCESS;
+
         }
         else
         {
             if(enemyAnimator.ShouldAnimateAgain())
                 enemyAnimator.PlayAnimation(enemyAnimator.GetAnimationName("Idle", "IdleUp", "IdleDown"));
             StopCharacter();
-            return NodeState.FAILURE;
         }
+
+        return NodeState.SUCCESS;
     }
 
     private void MoveCharacter(Vector3 direction, float speed)

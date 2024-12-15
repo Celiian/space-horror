@@ -67,12 +67,13 @@ public class PlayerAnimator : MonoBehaviour
 		return didChange;
 	}
 
-	public void PlayAnimation(string animationName)
+	public void PlayAnimation(string animationName, float speedMultiplier = 1f)
 	{
 		int hash = animationData.GetHash(animationName);
 		if (hash != 0)
 		{
 			_animator.Play(animationName, -1, 0f);
+			_animator.speed = 1 * speedMultiplier;
 			currentAnimation = animationName;
 		}
 	}

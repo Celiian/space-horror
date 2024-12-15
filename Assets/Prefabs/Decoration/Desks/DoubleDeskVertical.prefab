@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1856770474584266570}
   - component: {fileID: 6562559237854423361}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: scifi_items_69
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,9 +95,9 @@ GameObject:
   - component: {fileID: 446719304334465409}
   - component: {fileID: 6655119009813344956}
   - component: {fileID: 6309710580405092707}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DoubleDeskVertical
-  m_TagString: Untagged
+  m_TagString: Object
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -118,6 +118,8 @@ Transform:
   - {fileID: 4713272966899230729}
   - {fileID: 1856770474584266570}
   - {fileID: 2441866684376201939}
+  - {fileID: 5800434947279357649}
+  - {fileID: 5567635745392086977}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &6655119009813344956
@@ -177,6 +179,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65db6d9ee046e477faf3e6e659fcc92d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  positions:
+  - {fileID: 4291733094824173226}
+  - {fileID: 9147856362369682078}
 --- !u!1 &4284255272843156422
 GameObject:
   m_ObjectHideFlags: 0
@@ -187,7 +192,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4713272966899230729}
   - component: {fileID: 561594414757323569}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: scifi_items_53
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -261,6 +266,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &4291733094824173226
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5800434947279357649}
+  m_Layer: 8
+  m_Name: TIlePositions
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5800434947279357649
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4291733094824173226}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.28, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 446719304334465409}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6965911679303112091
 GameObject:
   m_ObjectHideFlags: 0
@@ -271,7 +307,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2441866684376201939}
   - component: {fileID: 7534783898468763916}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: scifi_items_71
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -345,3 +381,34 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &9147856362369682078
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5567635745392086977}
+  m_Layer: 8
+  m_Name: TIlePositions (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5567635745392086977
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9147856362369682078}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.85, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 446719304334465409}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

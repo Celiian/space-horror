@@ -3,22 +3,27 @@ using System.Collections.Generic;
 
 public class Decoration : MonoBehaviour
 {
-    private Tile tile;
+    [SerializeField]
+    public List<GameObject> positions;
+
+    private List<Tile> tiles;
     private List<SpriteRenderer> spriteRenderers;
     private bool hasBeenSeen = false;
 
     private void Start()
     {
         spriteRenderers = new List<SpriteRenderer>(GetComponentsInChildren<SpriteRenderer>());
+        tiles = new List<Tile>();
+        foreach(GameObject position in positions)
+        {   
+            Tile tile = SoundPropagationManager.Instance.getClosestTileFromPosition(position.transform.position);
+            tiles.Add(tile);
+            PathFinding.Instance.AddObstacle(tile.position);
+        }
     }
 
     private void LateUpdate()
     {
-        if (tile == null)
-        {
-            tile = SoundPropagationManager.Instance.getTileOnPosition(transform.position);
-        }
-
         float soundLevel = CalculateSoundLevel();
 
         if (soundLevel > 0 && !hasBeenSeen)
@@ -33,12 +38,22 @@ public class Decoration : MonoBehaviour
 
     private float CalculateSoundLevel()
     {
-        float soundLevel = 0f;
-        foreach (SoundData soundData in tile.soundSources)
+        float totalSoundLevel = 0f;
+        int soundDataCount = 0;
+
+        foreach (Tile tile in tiles)
         {
-            soundLevel += soundData.soundLevel;
+            foreach (SoundData soundData in tile.soundSources)
+            {
+                totalSoundLevel += soundData.soundLevel;
+                soundDataCount++;
+            }
         }
-        return Mathf.Clamp01(soundLevel);
+
+        if (soundDataCount == 0) return 0f;
+
+        float averageSoundLevel = totalSoundLevel / soundDataCount;
+        return Mathf.Clamp01(averageSoundLevel);
     }
 
     private Color DetermineColor(float soundLevel)

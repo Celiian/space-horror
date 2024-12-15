@@ -26,8 +26,11 @@ public class VisualDebugs : Node
         float rightAngle = visionAngle / 2;
 
         // Draw the main rays
-        Vector2 leftDirection = Quaternion.Euler(0, 0, leftAngle) * transform.right;
-        Vector2 rightDirection = Quaternion.Euler(0, 0, rightAngle) * transform.right;
+        var currentDirection = (Vector3?)GetData("movementDirection");
+        if(currentDirection == null) return;
+        Vector2 forwardDirection = (Vector2)currentDirection.Value;
+        Vector2 leftDirection = Quaternion.Euler(0, 0, leftAngle) * forwardDirection;
+        Vector2 rightDirection = Quaternion.Euler(0, 0, rightAngle) * forwardDirection;
         Debug.DrawRay(transform.position, leftDirection * visionLength, Color.red);
         Debug.DrawRay(transform.position, rightDirection * visionLength, Color.red);
 
@@ -38,7 +41,7 @@ public class VisualDebugs : Node
         for (int i = 1; i <= segments; i++)
         {
             float currentAngle = leftAngle + ((rightAngle - leftAngle) * i / segments);
-            Vector2 direction = (Vector2)(Quaternion.Euler(0, 0, currentAngle) * transform.right);
+            Vector2 direction = (Vector2)(Quaternion.Euler(0, 0, currentAngle) * forwardDirection);
             Vector2 currentPoint = (Vector2)transform.position + (direction * visionLength);
             
             Debug.DrawLine(previousPoint, currentPoint, Color.red);

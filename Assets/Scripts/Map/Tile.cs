@@ -30,7 +30,7 @@ public class Tile
         this.type = type;
     }
 
-    public void paint()
+    public void paint(bool debug = false)
     {
         Color color = Color.black;
         var soundLevel = 0f;
@@ -50,7 +50,9 @@ public class Tile
                 break;
         }
 
-        if(type == TileType.FLOOR && CalcUtils.DistanceToTarget(position, PlayerMovement.Instance.transform.position) > PlayerMovement.Instance.hearingRadius * 1.4f)
+        bool playerInRange = CalcUtils.DistanceToTarget(position, PlayerMovement.Instance.transform.position) > PlayerMovement.Instance.hearingRadius * 1.4f;
+
+        if(!debug && type == TileType.FLOOR && !playerInRange)
         {
             color = Color.black;
         }
@@ -90,5 +92,6 @@ public enum SoundOrigin
 {
     PLAYER,
     ZOMBIE,
-    INTERACTIBLE
+    INTERACTIBLE,
+    ITEM,
 }
