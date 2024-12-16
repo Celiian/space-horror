@@ -5,7 +5,6 @@ using UnityEngine.Tilemaps;
 public class GroundDecoration : MonoBehaviour
 {
     [SerializeField] private Tilemap groundTilemap;
-    [SerializeField] private bool minimumLight = false;
     private SoundPropagationManager soundManager;
 
     private void Start()

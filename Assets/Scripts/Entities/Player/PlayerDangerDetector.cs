@@ -1,0 +1,54 @@
+using UnityEngine;
+using System.Linq;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+public class PlayerDangerDetector : MonoBehaviour
+{
+    [SerializeField] private AudioClip dangerBip;
+    [SerializeField] private float dangerDistance = 10f;
+    [SerializeField] private GameObject dangerIndicator;
+    [SerializeField] private Material dangerIndicatorMaterialPreset;
+
+    private List<Zombie> zombies;
+    private Angel angel;
+    private List<Entity> entities;
+    private float beepInterval = 3f; // Maximum interval
+    private float minBeepInterval = 0.5f; // Minimum interval
+    private float lastBeepTime;
+    private Material dangerIndicatorMaterial;
+    
+
+    private void Start()
+    {
+        zombies = FindObjectsOfType<Zombie>().ToList();
+        angel = FindObjectOfType<Angel>();
+        entities = new List<Entity>();
+        entities.AddRange(zombies);
+        entities.Add(angel);
+        dangerIndicator.GetComponent<SpriteRenderer>().material = dangerIndicatorMaterialPreset; 
+        dangerIndicatorMaterial = dangerIndicator.GetComponent<SpriteRenderer>().material;
+    }
+
+    private void Update()
+    {
+        Entity closestEntity = entities
+            .Select(entity => new { Entity = entity, Distance = CalcUtils.DistanceToTarget(entity.transform.position, transform.position) })
+            .OrderBy(e => e.Distance)
+            .FirstOrDefault()?.Entity;
+
+        float distance = CalcUtils.DistanceToTarget(closestEntity.transform.position, transform.position);
+
+        if (distance < dangerDistance)
+        {
+            // Calculate the beep interval based on the distance
+            beepInterval = Mathf.Lerp(minBeepInterval, 3f, distance / dangerDistance);
+            dangerIndicatorMaterial.SetFloat("_Intensity", Mathf.Lerp(6, 1, distance / dangerDistance));
+
+            if (Time.time - lastBeepTime >= beepInterval)
+            {
+                SoundManager.Instance.PlaySoundClip(dangerBip, closestEntity.transform, SoundManager.SoundType.FX, SoundManager.SoundFXType.FX);
+                lastBeepTime = Time.time;
+            }
+        }
+    }
+}

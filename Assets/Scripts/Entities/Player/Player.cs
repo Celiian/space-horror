@@ -11,23 +11,9 @@ public class Player : MonoBehaviour
     }
 
     [SerializeField] private AudioClip deathSound;
-    [SerializeField] private AudioClip hitSound;
-
-    private SpriteRenderer spriteRenderer;
-    private Color originalColor;
-
-    private void Start() {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        originalColor = spriteRenderer.color;
-    }
 
     public void TakeDamage() {
-        SoundManager.Instance.PlaySoundClip(deathSound, transform, SoundManager.SoundType.FX, SoundManager.SoundFXType.FX);
-        playerAnimator.PlayAnimation("Die");
+        SoundManager.Instance.PlaySoundClip(deathSound, transform, SoundManager.SoundType.LOUD_FX, SoundManager.SoundFXType.FX);
         PlayerMovement.Instance.canMove = false;
-    }
-
-    private void ResetColor() {
-        spriteRenderer.color = originalColor;
     }
 }   

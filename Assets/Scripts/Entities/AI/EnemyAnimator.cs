@@ -1,7 +1,4 @@
-using BehaviorTree;
 using UnityEngine;
-using Tree = BehaviorTree.Tree;
-
 public class EnemyAnimator : MonoBehaviour
 {
 	[SerializeField] private AnimationData animationData;

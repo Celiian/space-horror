@@ -6,8 +6,6 @@ using UnityEngine.Tilemaps;
 public class WallDecoration : MonoBehaviour
 {
     [SerializeField] private Tilemap wallTilemap;
-    [SerializeField] private Tilemap groundTilemap;
-    [SerializeField] private bool minimumLight = false;
     private SoundPropagationManager soundManager;
 
     private void Start()

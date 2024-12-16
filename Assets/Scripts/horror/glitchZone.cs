@@ -14,13 +14,7 @@ public class GlitchZone : MonoBehaviour
     [SerializeField, Tooltip("Type of sound to be used.")]
     private SoundManager.SoundType soundType;
 
-    [FoldoutGroup("Audio Settings")]
-    [SerializeField, Tooltip("GameObject that emits the sound.")]
-    private GameObject soundEmitter;
 
-    [FoldoutGroup("Sound Propagation")]
-    [SerializeField, Tooltip("Attenuation factor for the sound volume.")]
-    private float volumeAttenuation;
     private bool isGlitching = false;
 
     private AudioSource audioSource;
