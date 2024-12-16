@@ -14,14 +14,14 @@ public class PlayerMovement : Entity
     [SerializeField] private PlayerAnimator playerAnimator;
 
     public bool canMove = true;
+    public bool isCrouching = false;
     
     public Vector2 movementDirection;
     public bool isMoving = false;
-
     public float hearingRadius = 15;
     private float stepTimer = 0;
     private float minMovementThreshold = 0.1f;
-
+    public float currentSpeedMultiplier = 1;
     private void Awake() {
         Instance = this;
     }
@@ -41,10 +41,13 @@ public class PlayerMovement : Entity
         }
         
         float currentSpeed = speed;
+        currentSpeedMultiplier = 1;
         if (Input.GetKey(KeyCode.LeftShift)) {
             currentSpeed *= sprintMultiplier;
+            currentSpeedMultiplier = sprintMultiplier;
         } else if (Input.GetKey(KeyCode.LeftControl)) {
             currentSpeed *= slowMultiplier;
+            currentSpeedMultiplier = slowMultiplier;
         }
         
         return inputVector * currentSpeed;

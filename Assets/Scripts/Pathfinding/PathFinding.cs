@@ -19,12 +19,14 @@ public class PathFinding : MonoBehaviour
         tileNodesObstacles.Clear();
         Decoration[] decorations = FindObjectsOfType<Decoration>();
         foreach(Decoration decoration in decorations){
-            foreach(GameObject deco in decoration.positions){
-                tileNodesObstacles[tilemap.WorldToCell(deco.transform.position)] = new TileNode { position = tilemap.WorldToCell(deco.transform.position), tilemap = tilemap };
+            if(decoration.isBlocking){
+                foreach(GameObject deco in decoration.positions){
+                    tileNodesObstacles[tilemap.WorldToCell(deco.transform.position)] = new TileNode { position = tilemap.WorldToCell(deco.transform.position), tilemap = tilemap };
+                }
             }
         }
     }
-
+    
     private void Awake() { 
         Instance = this;
         InitializeTileNodes();
@@ -53,11 +55,6 @@ public class PathFinding : MonoBehaviour
         }
     }
 
-    public void AddObstacle(Vector3Int position){
-        if(tileNodes.ContainsKey(position)){
-            tileNodes.Remove(position);
-        }
-    }
 
     public TileNode FindNodeCloseToPosition(Vector3 position) {
         Vector3Int cellPosition = tilemap.WorldToCell(position);
@@ -174,7 +171,7 @@ public class PathFinding : MonoBehaviour
             }
             closedList.Add(current);
         }
-
+    
         return null;
     }
 

@@ -315,4 +315,9 @@ public class SoundPropagationManager : MonoBehaviour
         Vector3Int positionInt = grid.WorldToCell(position);
         walls.Remove(positionInt);
     }
+
+    public List<Tile> GetTilesInRadius(Vector3 position, float radius)
+    {
+        return tiles.Where(tile => Vector3Int.Distance(grid.WorldToCell(position), tile.position) <= radius).ToList();
+    }
 }

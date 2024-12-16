@@ -35,6 +35,10 @@ public class Tile
         hasBeenSeen = false;
     }
 
+    public Vector3 getPosition(){
+        return tilemap.CellToWorld(position);
+    }
+
     public void paint(bool debug = false)
     {
         Color color = Color.black;

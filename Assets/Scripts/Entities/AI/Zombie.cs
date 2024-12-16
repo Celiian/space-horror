@@ -48,13 +48,15 @@ public class Zombie : Entity
     private Vector3 currentTarget;
     private float timeSinceLastUpdate;
     private float stepTimer;
-    public float speedMultiplier = 0.6f;
+    private float speedMultiplier = 0.6f;
     private bool isPatrolling = false;
     public Vector3 movementDirection;
     public bool debug = false;
-    public float discoveredPlayerTime = 0;
     public event Action OnPlayerDiscovered;
     private int currentPatrolIndex = 0;
+    private int hearingRadius = 5;
+    private float hearingTreeshold = 0.4f;
+    private bool playerDiscovered = false;
 
     #endregion
 
@@ -77,16 +79,21 @@ public class Zombie : Entity
     public override void Update()
     {
         if (isPaused) return;
+        Tile tile = null;
+        if(canHearPlayer()){
+            tile = locatePlayerSound();
+        }
 
-        if (isPlayerInRadius() && isPlayerInView() && isPlayerVisible())
+        if ((isPlayerInRadius() && isPlayerInView() && isPlayerVisible()) || tile != null)
         {
             PlayDiscoverEffect();
-
             if (currentPath == null || currentPath.Count == 0 || isPatrolling) 
             {
-                discoveredPlayerTime = Time.time;
-                OnPlayerDiscovered?.Invoke();
-                initPathToPlayer();
+                initPathToPlayer(tile);
+                if(!playerDiscovered){
+                    OnPlayerDiscovered?.Invoke();
+                    playerDiscovered = true;
+                }
             }
 
             speedMultiplier = 1.5f;
@@ -96,7 +103,7 @@ public class Zombie : Entity
 
             if(timeSinceLastUpdate > 0.2f)
             {
-                updatePathToPlayer();
+                updatePathToPlayer(tile);
                 timeSinceLastUpdate = 0;
             }
 
@@ -105,13 +112,14 @@ public class Zombie : Entity
                 if (isCloseToTarget(currentPath.First().GetPosition()))
                 {
                     currentPath.RemoveAt(0);
-                    if (currentPath.Count == 0)
+                    if (currentPath.Count == 0 || currentPath == null)
                     {
-                        updatePathToPlayer();
+                        updatePathToPlayer(tile);
                     }
                 }
-
-                currentTarget = currentPath.First().GetPosition();
+                if(currentPath != null && currentPath.Count > 0){
+                    currentTarget = currentPath.First().GetPosition();
+                }
             }
 
             Vector2 directionToPlayer = (PlayerMovement.Instance.transform.position - transform.position).normalized;
@@ -138,9 +146,10 @@ public class Zombie : Entity
 
             }
             else if(patrolPoints.Length > 0){
-                updatePatrolPath();
+                playerDiscovered = false;
                 speedMultiplier = 0.6f;
                 isPatrolling = true;
+                updatePatrolPath();
             }
         }
 
@@ -168,35 +177,62 @@ public class Zombie : Entity
         transform.localScale = scale;
     }
 
-    private void initPathToPlayer(){
+    private void initPathToPlayer(Tile tile = null){
+        Vector3 target = tile != null ? tile.getPosition() : PlayerMovement.Instance.transform.position;
         TileNode startNode = PathFinding.Instance.FindNodeCloseToPosition(transform.position);
-        TileNode endNode = PathFinding.Instance.FindNodeCloseToPosition(PlayerMovement.Instance.transform.position);
+        TileNode endNode = PathFinding.Instance.FindNodeCloseToPosition(target);
         currentPath = PathFinding.Instance.FindPath(startNode, endNode);
     }
 
-    private void updatePathToPlayer()
+    private void updatePathToPlayer(Tile tile = null)
     {
+        Vector3 target = tile != null ? tile.getPosition() : PlayerMovement.Instance.transform.position;
         Vector3 startingPos = currentPath == null || currentPath.Count == 0 ? transform.position : currentPath.First().GetPosition();
-
         TileNode startNode = PathFinding.Instance.FindNodeCloseToPosition(startingPos);
-        TileNode endNode = PathFinding.Instance.FindNodeCloseToPosition(PlayerMovement.Instance.transform.position);
+        TileNode endNode = PathFinding.Instance.FindNodeCloseToPosition(target);
         currentPath = PathFinding.Instance.FindPath(startNode, endNode);
     }
 
-    private void updatePatrolPath(){
+    private void updatePatrolPath(Tile tile = null){
+        Vector3 target = tile != null ? tile.getPosition() : patrolPoints[currentPatrolIndex].transform.position;
         currentPatrolIndex++;
         if (currentPatrolIndex >= patrolPoints.Length) {
             currentPatrolIndex = 0;
         }
 
         TileNode startNode = PathFinding.Instance.FindNodeCloseToPosition(transform.position);
-        TileNode endNode = PathFinding.Instance.FindNodeCloseToPosition(patrolPoints[currentPatrolIndex].transform.position);
+        TileNode endNode = PathFinding.Instance.FindNodeCloseToPosition(target);
         currentPath = PathFinding.Instance.FindPath(startNode, endNode);
     }
 
     #endregion
 
     #region Conditions
+    private bool canHearPlayer(){
+        float currentSpeedMultiplier = PlayerMovement.Instance.currentSpeedMultiplier;
+        return CalcUtils.DistanceToTarget(transform.position, PlayerMovement.Instance.transform.position) < (hearingRadius * currentSpeedMultiplier);
+    }
+
+    private Tile locatePlayerSound(){
+        // Get the tiles around the zombie
+        List<Tile> tiles = SoundPropagationManager.Instance.GetTilesInRadius(transform.position, hearingRadius);
+        Tile highestSoundTile = null;
+        foreach(Tile tile in tiles){
+            float soundLevel = 0;
+            foreach(var sound in tile.soundSources){
+                if(sound.origin == SoundOrigin.PLAYER){
+                    soundLevel += sound.soundLevel;
+                }
+            }
+            if(soundLevel > hearingTreeshold){
+                if(highestSoundTile == null || soundLevel > highestSoundTile.soundSources.Sum(sound => sound.origin == SoundOrigin.PLAYER ? sound.soundLevel : 0)){
+                    highestSoundTile = tile;
+                }
+            }
+        }
+        return highestSoundTile;
+    }
+
     private bool isCloseToTarget(Vector3 target){
         return CalcUtils.DistanceToTarget(transform.position, target) < 0.2f;
     }

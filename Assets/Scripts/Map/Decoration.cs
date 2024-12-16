@@ -9,6 +9,7 @@ public class Decoration : MonoBehaviour
     private List<Tile> tiles;
     private List<SpriteRenderer> spriteRenderers;
     private bool hasBeenSeen = false;
+    public bool isBlocking = true;
 
     private void Start()
     {
@@ -18,7 +19,7 @@ public class Decoration : MonoBehaviour
         {   
             Tile tile = SoundPropagationManager.Instance.getClosestTileFromPosition(position.transform.position);
             tiles.Add(tile);
-            PathFinding.Instance.AddObstacle(tile.position);
+
         }
     }
 
