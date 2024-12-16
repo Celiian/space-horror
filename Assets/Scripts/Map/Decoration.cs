@@ -28,12 +28,22 @@ public class Decoration : MonoBehaviour
 
         if (soundLevel > 0 && !hasBeenSeen)
         {
-            hasBeenSeen = true;
+            hasBeenSeen = checkHasBeenSeen();
         }
 
         Color color = DetermineColor(soundLevel);
 
         ApplyColorToSprites(color);
+    }
+
+    private bool checkHasBeenSeen()
+    {
+        foreach(Tile tile in tiles)
+        {
+            if(tile.hasBeenSeen)
+                return true;
+        }
+        return false;
     }
 
     private float CalculateSoundLevel()
@@ -58,12 +68,11 @@ public class Decoration : MonoBehaviour
 
     private Color DetermineColor(float soundLevel)
     {
-        Color color = Color.Lerp(Color.black, new Color(0.5f, 0.5f, 0.5f), soundLevel);
+        Color color = new Color(soundLevel, soundLevel, soundLevel);
 
-        if (hasBeenSeen && soundLevel <= 0.1f)
-        {
-            color = Color.Lerp(Color.black, Color.white, 0.05f);
-        }
+
+        if(!hasBeenSeen)
+            color = Color.black;
 
         return color;
     }

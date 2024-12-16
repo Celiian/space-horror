@@ -23,7 +23,7 @@ public class GroundDecoration : MonoBehaviour
             if (tile == null) continue;
 
             float soundLevel = CalculateSoundLevel(tile);
-            Color color = DetermineColor(soundLevel);
+            Color color = DetermineColor(soundLevel, tile);
 
             groundTilemap.SetTileFlags(position, TileFlags.None);
             groundTilemap.SetColor(position, color);
@@ -39,20 +39,14 @@ public class GroundDecoration : MonoBehaviour
         }
         soundLevel = Mathf.Clamp01(soundLevel);
 
-        // Ensure the sound level is at least 0.1 if the tile has been seen
-        if (tile.hasBeenSeen && soundLevel < 0.1f && minimumLight)
-        {
-            soundLevel = 0.1f;
-        }
-
         return soundLevel;
     }
 
     
 
-    private Color DetermineColor(float soundLevel)
+    private Color DetermineColor(float soundLevel, Tile tile)
     {
-        return Color.Lerp(Color.black, Color.white, soundLevel);
+        return tile.hasBeenSeen ? new Color(soundLevel, soundLevel, soundLevel) : Color.black;
     }
 
     private void LateUpdate()

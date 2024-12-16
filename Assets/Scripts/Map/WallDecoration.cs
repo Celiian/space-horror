@@ -47,12 +47,6 @@ public class WallDecoration : MonoBehaviour
             soundLevel += soundData.soundLevel;
         }
         soundLevel = Mathf.Clamp01(soundLevel);
-
-        // Ensure the sound level is at least 0.1 if the tile has been seen
-        if (tile.hasBeenSeen && soundLevel < 0.1f && minimumLight)
-        {
-            soundLevel = 0.5f;
-        }
         
         return soundLevel;
     }
@@ -60,7 +54,7 @@ public class WallDecoration : MonoBehaviour
 
     private Color DetermineColor(float soundLevel)
     {
-        return Color.Lerp(Color.black, Color.white, soundLevel);
+        return new Color(soundLevel, soundLevel, soundLevel);
     }
 
     private void LateUpdate()

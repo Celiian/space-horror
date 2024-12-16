@@ -49,7 +49,7 @@ public class GlitchZone : MonoBehaviour
             isGlitching = true;
             if(audioClip != null)
             {
-                audioSource = SoundManager.Instance.PlaySoundClip(audioClip, PlayerMovement.Instance.transform, soundType, SoundManager.SoundFXType.AMBIENT, looped: true);
+                audioSource = SoundManager.Instance.PlaySoundClip(audioClip, PlayerMovement.Instance.transform, soundType, SoundManager.SoundFXType.AMBIENT, looped: true, followTarget: PlayerMovement.Instance.transform);
             }
         }
     }

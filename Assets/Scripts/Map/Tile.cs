@@ -30,6 +30,11 @@ public class Tile
         this.type = type;
     }
 
+    public void Start()
+    {
+        hasBeenSeen = false;
+    }
+
     public void paint(bool debug = false)
     {
         Color color = Color.black;
@@ -38,7 +43,9 @@ public class Tile
         {
             soundLevel += soundData.soundLevel;
         }
-        soundLevel = Mathf.Clamp01(soundLevel);
+        // soundLevel = Mathf.Clamp(soundLevel, 0f, 0.5f);
+        soundLevel = Mathf.Clamp01(soundLevel) / 2;
+        
         switch (type)
         {
             case TileType.FLOOR:
@@ -46,23 +53,27 @@ public class Tile
                 break;
             case TileType.WALL:
                 if (soundLevel > 0)
-                    color = new Color(0.35f, 0.35f, 0.35f);
+                    color = new Color(0.25f, 0.25f, 0.25f);
                 break;
         }
 
-        bool playerInRange = CalcUtils.DistanceToTarget(position, PlayerMovement.Instance.transform.position) > PlayerMovement.Instance.hearingRadius * 1.4f;
-
-        if(!debug && type == TileType.FLOOR && !playerInRange)
+        if(!hasBeenSeen || (type == TileType.FLOOR && CalcUtils.DistanceToTarget(position, PlayerMovement.Instance.transform.position) > PlayerMovement.Instance.hearingRadius * 1.4f))
         {
             color = Color.black;
         }
-        
+
+
         tilemap.SetTileFlags(position, TileFlags.None);
         tilemap.SetColor(position, color);
     }
 
+
     public void UpdateSoundLevel(float newSoundLevel, SoundOrigin origin)
     {
+        if(origin == SoundOrigin.PLAYER){
+            hasBeenSeen = true;
+        }
+
         SoundData soundData = soundSources.Find(soundData => soundData.origin == origin);
         if (soundData != null)
         {
@@ -73,9 +84,6 @@ public class Tile
         {
             soundSources.Add(new SoundData(newSoundLevel, origin));
         }
-
-        if(origin == SoundOrigin.PLAYER)
-            hasBeenSeen = true;
     }
 }
 

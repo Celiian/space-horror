@@ -135,7 +135,7 @@ public class SoundPropagationManager : MonoBehaviour
             
             if (tile.soundSources.Count > 0)
             {
-                if(tile.type == TileType.WALL)
+                if(tile.type == TileType.WALL && tile.hasBeenSeen)
                 {
                     tiles.Remove(tile);
                     activeTiles.Remove(tile);
@@ -146,9 +146,8 @@ public class SoundPropagationManager : MonoBehaviour
                     foreach (SoundData soundData in tile.soundSources)
                     {
                         var soundLevel = soundData.soundLevel;
-                        
                         float timeSinceUpdate = Time.time - soundData.lastSoundUpdate;
-                        float decayFactor = Mathf.Exp(-timeSinceUpdate * 0.4f);
+                        float decayFactor = Mathf.Exp(-timeSinceUpdate * 0.3f);
                         float newSoundLevel = soundLevel * decayFactor;
 
                         updatedSoundSources.Add(new SoundData(newSoundLevel, soundData.origin));
@@ -167,9 +166,7 @@ public class SoundPropagationManager : MonoBehaviour
                     }
                 }
             }
-           
-            tile.paint(debug);
-            
+            tile.paint();
         }
     }
 

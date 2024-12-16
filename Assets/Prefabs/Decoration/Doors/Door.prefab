@@ -84,6 +84,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1478714277568043168
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7975607467535774555}
+  m_Layer: 8
+  m_Name: GameObject (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7975607467535774555
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1478714277568043168}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.72, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3305817832234039397}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2542413272272939181
 GameObject:
   m_ObjectHideFlags: 0
@@ -318,6 +349,37 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1.0012727}
   m_EdgeRadius: 0
+--- !u!1 &3340408132156091119
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 57709952557860111}
+  m_Layer: 8
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &57709952557860111
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3340408132156091119}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.899, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3305817832234039397}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4775851113765909045
 GameObject:
   m_ObjectHideFlags: 0
@@ -327,9 +389,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3305817832234039397}
-  - component: {fileID: 6129622950173171989}
   - component: {fileID: 8147173542811281532}
   - component: {fileID: 4406053399035482944}
+  - component: {fileID: 8380014106002906493}
   m_Layer: 8
   m_Name: Door
   m_TagString: Object
@@ -353,62 +415,10 @@ Transform:
   - {fileID: 176197541787863590}
   - {fileID: 5510784288793577357}
   - {fileID: 5946969585289531436}
+  - {fileID: 57709952557860111}
+  - {fileID: 7975607467535774555}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6129622950173171989
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4775851113765909045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 476b8073738484d78aa3623d7d9ffb9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  options:
-  - name: Open Door
-    variableName: isClosed
-    action:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 6129622950173171989}
-          m_TargetAssemblyTypeName: DoorInteractible, Assembly-CSharp
-          m_MethodName: OpenDoor
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 1
-  - name: CLose Door
-    variableName: isOpen
-    action:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 6129622950173171989}
-          m_TargetAssemblyTypeName: DoorInteractible, Assembly-CSharp
-          m_MethodName: CloseDoor
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 1
-  optionUiItemPrefab: {fileID: 3586726083074741184, guid: 973345aafc7e94b07bbc743c7bf0b20a, type: 3}
-  interactibleDisplay: {fileID: 2542413272272939181}
-  closedDoor: {fileID: 3104610158858464939}
-  openDoor: {fileID: 988705954962670006}
-  doorCollider: {fileID: 1429888047763555068}
-  openDoorSound: {fileID: 8300000, guid: 5c117a07d16e4425fa309d78e4292184, type: 3}
-  closeDoorSound: {fileID: 8300000, guid: 54a46f0a3ac60460f8693cb6deb5a27a, type: 3}
 --- !u!58 &8147173542811281532
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -456,4 +466,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65db6d9ee046e477faf3e6e659fcc92d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  positions: []
+  positions:
+  - {fileID: 3340408132156091119}
+  - {fileID: 1478714277568043168}
+--- !u!114 &8380014106002906493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4775851113765909045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 130bac6365d0f423bab25276b5723efd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openDoor: {fileID: 988705954962670006}
+  closedDoor: {fileID: 3104610158858464939}
+  openDoorSound: {fileID: 8300000, guid: 5c117a07d16e4425fa309d78e4292184, type: 3}
+  closeDoorSound: {fileID: 8300000, guid: 54a46f0a3ac60460f8693cb6deb5a27a, type: 3}
+  defaultInteractible: 1

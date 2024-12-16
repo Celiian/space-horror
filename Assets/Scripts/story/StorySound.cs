@@ -1,35 +1,52 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using UnityEngine.Events;
 
 public class StorySoundManager : MonoBehaviour
 {
     [Serializable]
     public class StorySound
     {
-        [BoxGroup("General Settings", CenterLabel = true)]
+        [VerticalGroup("Settings")]
+        [BoxGroup("Settings/General Settings", CenterLabel = true)]
         [LabelWidth(100)]
         public AudioClip SoundClip;
 
-        [BoxGroup("Trigger Settings", CenterLabel = true)]
+        [VerticalGroup("Settings")]
+        [BoxGroup("Settings/General Settings")]
+        [LabelWidth(100)]
+        public bool PropagateSound;
+
+        [VerticalGroup("Settings")]
+        [BoxGroup("Settings/General Settings")]
+        [LabelWidth(100)]
+        public GameObject PropagationSource;
+
+        [VerticalGroup("Settings")]
+        [BoxGroup("Settings/Trigger Settings", CenterLabel = true)]
         [LabelWidth(100)]
         [LabelText("Trigger Type")]
         [ValueDropdown(nameof(TriggerTypeOptions))]
         public TriggerType Trigger;
 
-        [BoxGroup("Trigger Settings")]
+        [VerticalGroup("Settings")]
+        [BoxGroup("Settings/Trigger Settings")]
         [ShowIf(nameof(IsColliderTrigger))]
         [Tooltip("Specify a GameObject with a collider.")]
         public GameObject TriggerObject;
 
-        [BoxGroup("Trigger Settings")]
+        [VerticalGroup("Settings")]
+        [BoxGroup("Settings/Trigger Settings")]
         [ShowIf(nameof(IsTimeTrigger))]
         [Tooltip("Time in seconds after the scene starts.")]
         [LabelWidth(100)]
         public float TriggerTime;
 
-        [BoxGroup("Trigger Settings")]
+        [VerticalGroup("Settings")]
+        [BoxGroup("Settings/Trigger Settings")]
         [ShowIf(nameof(IsCustomEventTrigger))]
         [Tooltip("Event to trigger this sound.")]
         [LabelWidth(120)]
@@ -37,6 +54,10 @@ public class StorySoundManager : MonoBehaviour
 
         [HideInInspector]
         public bool Triggered;
+
+        [BoxGroup("Callback Settings", CenterLabel = true)]
+        [LabelWidth(100)]
+        public UnityEvent[] OnSoundFinished;
 
         private static IEnumerable<TriggerType> TriggerTypeOptions => Enum.GetValues(typeof(TriggerType)) as TriggerType[];
 
@@ -110,11 +131,29 @@ public class StorySoundManager : MonoBehaviour
 
     private void PlaySound(StorySound sound)
     {
-        SoundManager.Instance.PlaySoundClip(
+        AudioSource audioSource = SoundManager.Instance.PlaySoundClip(
             sound.SoundClip,
             PlayerMovement.Instance.transform,
             SoundManager.SoundType.LOUD_FX,
             SoundManager.SoundFXType.AMBIENT,
-            followPlayer:true);
+            followTarget: sound.PropagationSource.transform);
+
+        StartCoroutine(WaitForSoundToFinish(audioSource, sound.OnSoundFinished));
+
+        if (sound.PropagateSound)
+            SoundPropagationManager.Instance.PropagateSound(sound.PropagationSource.transform.position, SoundOrigin.PLAYER, 0.5f);
+    }
+
+    private IEnumerator WaitForSoundToFinish(AudioSource audioSource, UnityEvent[] callbacks)
+    {
+        yield return new WaitWhile(() => audioSource != null && audioSource.isPlaying);
+
+        if (callbacks != null)
+        {
+            foreach (var callback in callbacks)
+            {
+                callback.Invoke();
+            }
+        }
     }
 }
