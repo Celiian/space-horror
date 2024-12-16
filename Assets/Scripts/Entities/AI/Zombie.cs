@@ -36,6 +36,10 @@ public class Zombie : Entity
     [FoldoutGroup("Stats"), SerializeField]
     public float moveSpeed;
 
+    [FoldoutGroup("Stats"), SerializeField]
+    public GameObject[] patrolPoints;
+
+
     #endregion
 
     #region Variables
@@ -50,7 +54,8 @@ public class Zombie : Entity
     public bool debug = false;
     public float discoveredPlayerTime = 0;
     public event Action OnPlayerDiscovered;
-    private Coroutine blurCoroutine;
+    private int currentPatrolIndex = 0;
+
     #endregion
 
     private void Awake()
@@ -132,7 +137,7 @@ public class Zombie : Entity
                 }
 
             }
-            else {
+            else if(patrolPoints.Length > 0){
                 updatePatrolPath();
                 speedMultiplier = 0.6f;
                 isPatrolling = true;
@@ -179,15 +184,21 @@ public class Zombie : Entity
     }
 
     private void updatePatrolPath(){
+        currentPatrolIndex++;
+        if (currentPatrolIndex >= patrolPoints.Length) {
+            currentPatrolIndex = 0;
+        }
+
         TileNode startNode = PathFinding.Instance.FindNodeCloseToPosition(transform.position);
-        currentPath = PathFinding.Instance.GetRandomPath(startNode);
+        TileNode endNode = PathFinding.Instance.FindNodeCloseToPosition(patrolPoints[currentPatrolIndex].transform.position);
+        currentPath = PathFinding.Instance.FindPath(startNode, endNode);
     }
 
     #endregion
 
     #region Conditions
     private bool isCloseToTarget(Vector3 target){
-        return CalcUtils.DistanceToTarget(transform.position, target) < 0.1f;
+        return CalcUtils.DistanceToTarget(transform.position, target) < 0.2f;
     }
 
     private bool isPlayerInRadius(){
@@ -312,7 +323,7 @@ public class Zombie : Entity
     }
 
     private void StopDiscoverEffect() {
-        zombieMaterial.SetFloat("_BlurAmount", 0);
+        zombieRenderer.material.SetFloat("_BlurAmount", 0);
     }
 
     #endregion

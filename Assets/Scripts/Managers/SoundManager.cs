@@ -48,7 +48,7 @@ public class SoundManager : MonoBehaviour
         Instance = this;
     }
 
-    public AudioSource PlaySoundClip(AudioClip audioClip, Transform transform, SoundType volume, SoundFXType soundFXType, bool looped = false, float? distanceMax = null, Transform followTarget = null) {
+    public AudioSource PlaySoundClip(AudioClip audioClip, Transform transform, SoundType volume, SoundFXType soundFXType, bool looped = false, float? distanceMax = null, Transform followTarget = null, float? additionalAttenuation = null) {
         distanceMax ??= PlayerMovement.Instance.hearingRadius;
         float distance = CalcUtils.DistanceToTarget(transform.position, PlayerMovement.Instance.transform.position);
         if(distance > distanceMax * 1.3f)
@@ -60,12 +60,15 @@ public class SoundManager : MonoBehaviour
             float attenuation = 1f - ((distance - distanceMax.Value) / (distanceMax.Value * 0.5f));
             volumeValue *= attenuation;
         }
+        if(additionalAttenuation != null) {
+            volumeValue *= additionalAttenuation.Value;
+        }
 
         return looped ? PlayLoopedSound(audioClip, transform, volumeValue, soundFXType) : PlaySound(audioClip, transform, volumeValue, soundFXType, followTarget);
     }
 
 
-    public void PlayRandomSoundClip(AudioClip[] audioClips, Transform transform, SoundType volume, SoundFXType soundFXType, float? distanceMax = null, Transform followTarget = null) {
+    public void PlayRandomSoundClip(AudioClip[] audioClips, Transform transform, SoundType volume, SoundFXType soundFXType, float? distanceMax = null, Transform followTarget = null, float? additionalAttenuation = null) {
         distanceMax ??= PlayerMovement.Instance.hearingRadius;
         float distance = CalcUtils.DistanceToTarget(transform.position, PlayerMovement.Instance.transform.position);
         if(distance > distanceMax * 1.5f)
@@ -76,6 +79,9 @@ public class SoundManager : MonoBehaviour
         if (distance > distanceMax.Value) {
             float attenuation = 1f - ((distance - distanceMax.Value) / (distanceMax.Value * 0.5f));
             volumeValue *= attenuation;
+        }
+        if(additionalAttenuation != null) {
+            volumeValue *= additionalAttenuation.Value;
         }
         AudioClip audioClip = audioClips[Random.Range(0, audioClips.Length)];
         PlaySound(audioClip, transform, volumeValue, soundFXType, followTarget);

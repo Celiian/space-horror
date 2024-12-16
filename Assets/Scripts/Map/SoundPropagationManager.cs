@@ -166,7 +166,7 @@ public class SoundPropagationManager : MonoBehaviour
                     }
                 }
             }
-            tile.paint();
+            tile.paint(debug);
         }
     }
 

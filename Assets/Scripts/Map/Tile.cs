@@ -45,7 +45,7 @@ public class Tile
         }
         // soundLevel = Mathf.Clamp(soundLevel, 0f, 0.5f);
         soundLevel = Mathf.Clamp01(soundLevel) / 2;
-        
+
         switch (type)
         {
             case TileType.FLOOR:
@@ -56,10 +56,11 @@ public class Tile
                     color = new Color(0.25f, 0.25f, 0.25f);
                 break;
         }
-
-        if(!hasBeenSeen || (type == TileType.FLOOR && CalcUtils.DistanceToTarget(position, PlayerMovement.Instance.transform.position) > PlayerMovement.Instance.hearingRadius * 1.4f))
-        {
-            color = Color.black;
+        if(!debug){
+            if(!hasBeenSeen || (type == TileType.FLOOR && CalcUtils.DistanceToTarget(position, PlayerMovement.Instance.transform.position) > PlayerMovement.Instance.hearingRadius * 1.4f))
+            {
+                color = Color.black;
+            }
         }
 
 

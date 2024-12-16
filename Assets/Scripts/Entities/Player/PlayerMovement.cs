@@ -8,7 +8,8 @@ public class PlayerMovement : Entity
 
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private float speed;
-    [SerializeField] private float sprintMultiplier = 1.75f;
+    [SerializeField] private float sprintMultiplier = 1.5f;
+    [SerializeField] private float slowMultiplier = 0.5f;
     [SerializeField] private AudioClip[] stepSounds;
     [SerializeField] private PlayerAnimator playerAnimator;
 
@@ -39,7 +40,13 @@ public class PlayerMovement : Entity
             inputVector.Normalize();
         }
         
-        float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? speed * sprintMultiplier : speed;
+        float currentSpeed = speed;
+        if (Input.GetKey(KeyCode.LeftShift)) {
+            currentSpeed *= sprintMultiplier;
+        } else if (Input.GetKey(KeyCode.LeftControl)) {
+            currentSpeed *= slowMultiplier;
+        }
+        
         return inputVector * currentSpeed;
     }
 
@@ -71,8 +78,8 @@ public class PlayerMovement : Entity
                 : SoundPropagationManager.Instance.stepInterval;
 
             if (stepTimer >= currentStepInterval) {
-                SoundPropagationManager.Instance.PropagateSound(transform.position, SoundOrigin.PLAYER, 0.6f);
-                SoundManager.Instance.PlayRandomSoundClip(stepSounds, transform, SoundType.FOOTSTEPS, SoundFXType.FX, followTarget: transform);
+                SoundPropagationManager.Instance.PropagateSound(transform.position, SoundOrigin.PLAYER, 0.6f * sprintMultiplier);
+                SoundManager.Instance.PlayRandomSoundClip(stepSounds, transform, SoundType.FOOTSTEPS, SoundFXType.FX, followTarget: transform, additionalAttenuation: sprintMultiplier);
                 stepTimer = 0;
             }
         } else {
