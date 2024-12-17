@@ -10,6 +10,8 @@ public class TerminalInteraction : Interactible
     [SerializeField] private UnityEvent onInteract;
     [SerializeField] private TextMeshProUGUI terminalPageText;
     [SerializeField] private TextMeshProUGUI terminalNameText;
+    [SerializeField] private GameObject nextPageButton;
+    [SerializeField] private GameObject previousPageButton;
     [SerializeField] private string terminalName;
     [SerializeField] private string[] pages;
 
@@ -35,6 +37,7 @@ public class TerminalInteraction : Interactible
         terminalPageText.text = pages[currentPageIndex];
         if(onInteract != null)
             onInteract.Invoke();
+        UpdateButtons();
     }
 
     public override bool IsInteractible()
@@ -64,12 +67,18 @@ public class TerminalInteraction : Interactible
         if (Input.GetKeyDown(KeyCode.RightArrow)) {
             currentPageIndex = (currentPageIndex + 1) % pages.Length;
             terminalPageText.text = pages[currentPageIndex];
+            UpdateButtons();
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow)) {
             currentPageIndex = (currentPageIndex - 1 + pages.Length) % pages.Length;
             terminalPageText.text = pages[currentPageIndex];
+            UpdateButtons();
         }
     }
 
 
-}
+    private void UpdateButtons() {
+        nextPageButton.SetActive(currentPageIndex < pages.Length - 1);
+        previousPageButton.SetActive(currentPageIndex > 0);
+    }
+}   
