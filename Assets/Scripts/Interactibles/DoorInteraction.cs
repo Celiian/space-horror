@@ -73,6 +73,7 @@ public class DoorInteraction : Interactible
 
     private new void OnTriggerEnter2D(Collider2D other) {
         base.OnTriggerEnter2D(other);
+        if(!defaultInteractible) return;
         if(other.CompareTag("Enemy")){
             entitiesClose.Add(other.GetComponent<Entity>());
             OpenDoor();
@@ -81,6 +82,7 @@ public class DoorInteraction : Interactible
 
     private new void OnTriggerExit2D(Collider2D other) {
         base.OnTriggerExit2D(other);
+        if(!defaultInteractible) return;
         if(other.CompareTag("Enemy")){
             entitiesClose.Remove(other.GetComponent<Entity>());
             if(entitiesClose.Count == 0){
@@ -91,6 +93,8 @@ public class DoorInteraction : Interactible
 
 
     private void Update() {
+        if(!defaultInteractible) return;
+
         if(entitiesClose.Count > 0 && !isOpen){
             OpenDoor();
         }

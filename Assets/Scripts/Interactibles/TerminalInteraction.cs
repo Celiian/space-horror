@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Febucci.UI;
 using TMPro;
 using UnityEngine;
@@ -8,6 +9,7 @@ public class TerminalInteraction : Interactible
     [SerializeField] private GameObject terminal;
     [SerializeField] private bool defaultInteractible = true;
     [SerializeField] private UnityEvent onInteract;
+    [SerializeField] private UnityEvent onInteractFinished;
     [SerializeField] private TextMeshProUGUI terminalPageText;
     [SerializeField] private TextMeshProUGUI terminalNameText;
     [SerializeField] private GameObject nextPageButton;
@@ -20,6 +22,8 @@ public class TerminalInteraction : Interactible
 
     private bool interactible= false;
 
+    private List<Entity> entitiesToUnpause = new List<Entity>();
+
     private void Start() {
         interactible = defaultInteractible;
     }
@@ -30,7 +34,10 @@ public class TerminalInteraction : Interactible
         terminal.SetActive(true);
         Entity[] entities =  FindObjectsOfType<Entity>();
         foreach (var entity in entities) {
-            entity.isPaused = true;
+            if(!entity.isPaused){
+                entitiesToUnpause.Add(entity);
+                entity.isPaused = true;
+            }
         }
 
         terminalNameText.text = terminalName;
@@ -55,11 +62,11 @@ public class TerminalInteraction : Interactible
         if (Input.GetKeyDown(KeyCode.Escape)) {
             isOpen = false;
             terminal.SetActive(false);
-            Entity[] entities =  FindObjectsOfType<Entity>();
-            foreach (var entity in entities) {
+            foreach (var entity in entitiesToUnpause) {
                 entity.isPaused = false;
             }
-                    
+            entitiesToUnpause.Clear();
+            onInteractFinished?.Invoke();
         }
          if (Input.GetKeyDown(KeyCode.Space)) {
             terminalPageText.GetComponent<TypewriterByCharacter>().SkipTypewriter();

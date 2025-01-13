@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 1884018364675643030}
   - component: {fileID: 7768329922330348975}
   - component: {fileID: -4898822395251087146}
+  - component: {fileID: -1318655044251928540}
   m_Layer: 9
   m_Name: Zombie
   m_TagString: Enemy
@@ -35,7 +36,8 @@ Transform:
   m_LocalPosition: {x: -29.3, y: -27.8, z: -0.16161864}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1863447989492182666}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6369052641269370866
@@ -211,6 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bddb4ac7a2d3450bb528c70ec97229a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPaused: 0
   zombieMaterial: {fileID: 2100000, guid: 3f20d1289a23041a284816bd16575805, type: 2}
   stepSounds:
   - {fileID: 8300000, guid: ca08faec782bb48f8be69b247a301dfa, type: 3}
@@ -225,10 +228,9 @@ MonoBehaviour:
   detectionRadius: 15
   visionAngle: 160
   moveSpeed: 2
-  speedMultiplier: 1
+  patrolPoints: []
   movementDirection: {x: 0, y: 0, z: 0}
   debug: 0
-  discoveredPlayerTime: 0
 --- !u!114 &-4898822395251087146
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,3 +247,50 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e5eb959a63343466598950434b7f69a5, type: 3}
   - {fileID: 8300000, guid: a33ee9c9a090e469a86c548ba9bc64fd, type: 3}
   - {fileID: 8300000, guid: a4d2e38b389ad46dcaaf6bbc07149639, type: 3}
+--- !u!114 &-1318655044251928540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4704074639828264234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65db6d9ee046e477faf3e6e659fcc92d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  positions:
+  - {fileID: 7398433719287888345}
+  isBlocking: 0
+  maxLightLevel: 0.3
+--- !u!1 &7398433719287888345
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1863447989492182666}
+  m_Layer: 9
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1863447989492182666
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7398433719287888345}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6104247155965064658}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

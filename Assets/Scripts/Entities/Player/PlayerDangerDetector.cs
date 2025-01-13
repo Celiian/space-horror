@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using Sirenix.Utilities;
 public class PlayerDangerDetector : MonoBehaviour
 {
     [SerializeField] private AudioClip dangerBip;
@@ -27,14 +28,18 @@ public class PlayerDangerDetector : MonoBehaviour
         entities.Add(angel);
         dangerIndicator.GetComponent<SpriteRenderer>().material = dangerIndicatorMaterialPreset; 
         dangerIndicatorMaterial = dangerIndicator.GetComponent<SpriteRenderer>().material;
+        dangerIndicator.SetActive(true);
     }
 
     private void Update()
     {
         Entity closestEntity = entities
+            .Where(entity => !entity.isPaused)
             .Select(entity => new { Entity = entity, Distance = CalcUtils.DistanceToTarget(entity.transform.position, transform.position) })
             .OrderBy(e => e.Distance)
             .FirstOrDefault()?.Entity;
+
+        if(!closestEntity) return;
 
         float distance = CalcUtils.DistanceToTarget(closestEntity.transform.position, transform.position);
 
@@ -42,7 +47,7 @@ public class PlayerDangerDetector : MonoBehaviour
         {
             // Calculate the beep interval based on the distance
             beepInterval = Mathf.Lerp(minBeepInterval, 3f, distance / dangerDistance);
-            dangerIndicatorMaterial.SetFloat("_Intensity", Mathf.Lerp(6, 1, distance / dangerDistance));
+            dangerIndicatorMaterial.SetFloat("_Intensity", Mathf.Lerp(2, 1, distance / dangerDistance));
 
             if (Time.time - lastBeepTime >= beepInterval)
             {

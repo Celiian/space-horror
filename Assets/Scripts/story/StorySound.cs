@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEngine.Events;
+using TMPro;
 
 public class StorySoundManager : MonoBehaviour
 {
@@ -18,12 +19,27 @@ public class StorySoundManager : MonoBehaviour
         [VerticalGroup("Settings")]
         [BoxGroup("Settings/General Settings")]
         [LabelWidth(100)]
+        public SoundManager.SoundType SoundType;
+
+        [VerticalGroup("Settings")]
+        [BoxGroup("Settings/General Settings")]
+        [LabelWidth(100)]
         public bool PropagateSound;
 
         [VerticalGroup("Settings")]
         [BoxGroup("Settings/General Settings")]
         [LabelWidth(100)]
         public GameObject PropagationSource;
+
+        [VerticalGroup("Settings")]
+        [BoxGroup("Settings/General Settings")]
+        [LabelWidth(100)]
+        public SoundOrigin SoundOrigin;
+
+        [VerticalGroup("Settings")]
+        [BoxGroup("Settings/General Settings")]
+        [LabelWidth(100)]
+        public float Attenuation;
 
         [VerticalGroup("Settings")]
         [BoxGroup("Settings/Trigger Settings", CenterLabel = true)]
@@ -59,6 +75,12 @@ public class StorySoundManager : MonoBehaviour
         [LabelWidth(100)]
         public UnityEvent[] OnSoundFinished;
 
+        [VerticalGroup("Settings")]
+        [BoxGroup("Settings/General Settings")]
+        [LabelWidth(100)]
+        [Tooltip("Subtitle text for the sound.")]
+        public string SubtitleText;
+
         private static IEnumerable<TriggerType> TriggerTypeOptions => Enum.GetValues(typeof(TriggerType)) as TriggerType[];
 
         public enum TriggerType
@@ -77,7 +99,24 @@ public class StorySoundManager : MonoBehaviour
     [TableList(AlwaysExpanded = true)]
     public List<StorySound> StorySounds = new List<StorySound>();
 
+    [FoldoutGroup("Subtitle Display", true)]
+    [SerializeField]
+    [Tooltip("UI Text element to display subtitles.")]
+    private TextMeshProUGUI subtitleTextUI;
+
+    [FoldoutGroup("Subtitle Display")]
+    [SerializeField]
+    [Tooltip("Canvas to display subtitles on.")]
+    private Canvas _subtitleCanvas;
+
     private float _elapsedTime;
+
+    private int _subtitlesDisplayed = 0;
+
+    private void Start()
+    {
+        _subtitleCanvas.enabled = false;
+    }
 
     private void Update()
     {
@@ -99,9 +138,19 @@ public class StorySoundManager : MonoBehaviour
                         sound.Triggered = true;
                     }
                     break;
-                case StorySound.TriggerType.CustomEvent:
-                    // Custom events need to be triggered externally
-                    break;
+            }
+        }
+    }
+
+    public void TriggerCustomEvent(string eventName)
+    {
+        Debug.Log("TriggerCustomEvent: " + eventName);
+        foreach (var sound in StorySounds)
+        {
+            if (sound.Trigger == StorySound.TriggerType.CustomEvent && sound.CustomEventName == eventName)
+            {
+                PlaySound(sound);
+                sound.Triggered = true;
             }
         }
     }
@@ -117,36 +166,41 @@ public class StorySoundManager : MonoBehaviour
         }
     }
 
-    public void TriggerCustomEvent(string eventName)
-    {
-        foreach (var sound in StorySounds)
-        {
-            if (sound.Trigger == StorySound.TriggerType.CustomEvent && sound.CustomEventName == eventName)
-            {
-                PlaySound(sound);
-                sound.Triggered = true;
-            }
-        }
-    }
-
+    
     private void PlaySound(StorySound sound)
     {
+        // Display the subtitle
+        if (subtitleTextUI != null)
+        {
+            _subtitleCanvas.enabled = true;
+            subtitleTextUI.text = sound.SubtitleText;
+
+            _subtitlesDisplayed++;
+        }
+
         AudioSource audioSource = SoundManager.Instance.PlaySoundClip(
             sound.SoundClip,
             PlayerMovement.Instance.transform,
-            SoundManager.SoundType.LOUD_FX,
-            SoundManager.SoundFXType.AMBIENT,
+            sound.SoundType,
+            SoundManager.SoundFXType.FX,
             followTarget: sound.PropagationSource.transform);
 
         StartCoroutine(WaitForSoundToFinish(audioSource, sound.OnSoundFinished));
 
         if (sound.PropagateSound)
-            SoundPropagationManager.Instance.PropagateSound(sound.PropagationSource.transform.position, SoundOrigin.PLAYER, 0.5f);
+            SoundPropagationManager.Instance.PropagateSound(sound.PropagationSource.transform.position, sound.SoundOrigin, sound.Attenuation);
     }
 
     private IEnumerator WaitForSoundToFinish(AudioSource audioSource, UnityEvent[] callbacks)
     {
         yield return new WaitWhile(() => audioSource != null && audioSource.isPlaying);
+
+        _subtitlesDisplayed--;
+        if (_subtitlesDisplayed == 0)
+        {
+            _subtitleCanvas.enabled = false;
+            subtitleTextUI.text = "";
+        }
 
         if (callbacks != null)
         {

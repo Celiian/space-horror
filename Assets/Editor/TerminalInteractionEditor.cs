@@ -18,7 +18,7 @@ public class TerminalInteractionEditor : Editor
         EditorGUILayout.PropertyField(serializedObject.FindProperty("onInteract"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("nextPageButton"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("previousPageButton"));
-
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("onInteractFinished"));
         SerializedProperty pagesProperty = serializedObject.FindProperty("pages");
         EditorGUILayout.LabelField("Pages", EditorStyles.boldLabel);
         for (int i = 0; i < pagesProperty.arraySize; i++)

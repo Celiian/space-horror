@@ -98,7 +98,7 @@ public class Angel : Entity
     #region Actions
     private void MoveTowardsTarget(Vector3 target){
         if(isPaused) return;
-        
+
         Tile tile = SoundPropagationManager.Instance.getClosestTileFromPosition(target);
         if(tile.soundSources.Sum(sound => sound.soundLevel) > 0.1f){
             rb.velocity = Vector2.zero;

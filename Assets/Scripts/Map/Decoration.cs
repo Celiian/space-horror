@@ -11,6 +11,8 @@ public class Decoration : MonoBehaviour
     private bool hasBeenSeen = false;
     public bool isBlocking = true;
 
+    public float maxLightLevel = 1f;
+
     private void Start()
     {
         spriteRenderers = new List<SpriteRenderer>(GetComponentsInChildren<SpriteRenderer>());
@@ -69,7 +71,8 @@ public class Decoration : MonoBehaviour
 
     private Color DetermineColor(float soundLevel)
     {
-        Color color = new Color(soundLevel, soundLevel, soundLevel);
+        float newSoundLevel = soundLevel > maxLightLevel ? maxLightLevel : soundLevel;
+        Color color = new Color(newSoundLevel, newSoundLevel, newSoundLevel);
 
 
         if(!hasBeenSeen)
