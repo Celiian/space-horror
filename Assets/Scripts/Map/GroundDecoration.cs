@@ -45,7 +45,7 @@ public class GroundDecoration : MonoBehaviour
 
     private Color DetermineColor(float soundLevel, Tile tile)
     {
-        return tile.hasBeenSeen ? new Color(soundLevel, soundLevel, soundLevel) : Color.black;
+        return soundManager.debug || tile.hasBeenSeen ? new Color(soundLevel, soundLevel, soundLevel) : Color.black;
     }
 
     private void LateUpdate()

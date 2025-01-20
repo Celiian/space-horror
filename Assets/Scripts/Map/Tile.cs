@@ -60,6 +60,7 @@ public class Tile
                     color = new Color(0.25f, 0.25f, 0.25f);
                 break;
         }
+        
         if(!debug){
             if(!hasBeenSeen || (type == TileType.FLOOR && CalcUtils.DistanceToTarget(position, PlayerMovement.Instance.transform.position) > PlayerMovement.Instance.hearingRadius * 1.4f))
             {

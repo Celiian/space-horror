@@ -62,7 +62,7 @@ public class SoundPropagationManager : MonoBehaviour
     [SerializeField] public float stepInterval = 0.8f;
 
     [FoldoutGroup("Debug")]
-    [SerializeField] private bool debug = false;
+    [SerializeField] public bool debug = false;
 
     public List<Vector3Int> walls = new List<Vector3Int>();
     private List<Tile> tiles = new List<Tile>();
@@ -73,14 +73,14 @@ public class SoundPropagationManager : MonoBehaviour
     private void Start() {
         foreach (var kvp in tilesByPosition)
         {
-            kvp.Value.paint();
+            kvp.Value.paint(debug);
         }
         foreach (Vector3Int tilePosition in wallTilemap.cellBounds.allPositionsWithin)
         {
             var tile = new Tile(tilePosition, TileType.WALL, wallTilemap);
             if (!tilesByPosition.ContainsKey(tilePosition))
             {
-                tile.paint();
+                tile.paint(debug);
             }
         }
     }  
@@ -135,7 +135,7 @@ public class SoundPropagationManager : MonoBehaviour
             
             if (tile.soundSources.Count > 0)
             {
-                if(tile.type == TileType.WALL && tile.hasBeenSeen)
+                if(tile.type == TileType.WALL && (debug || tile.hasBeenSeen))
                 {
                     tiles.Remove(tile);
                     activeTiles.Remove(tile);
@@ -147,7 +147,7 @@ public class SoundPropagationManager : MonoBehaviour
                     {
                         var soundLevel = soundData.soundLevel;
                         float timeSinceUpdate = Time.time - soundData.lastSoundUpdate;
-                        float decayFactor = Mathf.Exp(-timeSinceUpdate * 0.3f);
+                        float decayFactor = Mathf.Exp(-timeSinceUpdate * 0.6f);
                         float newSoundLevel = soundLevel * decayFactor;
 
                         updatedSoundSources.Add(new SoundData(newSoundLevel, soundData.origin));

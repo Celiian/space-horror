@@ -84,7 +84,7 @@ public class Zombie : Entity
             tile = locatePlayerSound();
         }
 
-        if ((isPlayerInRadius() && isPlayerInView() && isPlayerVisible()) || tile != null)
+        if (tile != null)
         {
             PlayDiscoverEffect();
             if (currentPath == null || currentPath.Count == 0 || isPatrolling) 
@@ -125,7 +125,7 @@ public class Zombie : Entity
             Vector2 directionToPlayer = (PlayerMovement.Instance.transform.position - transform.position).normalized;
             movementDirection = directionToPlayer;
             float distanceToPlayer = CalcUtils.DistanceToTarget(transform.position, PlayerMovement.Instance.transform.position);
-            if(distanceToPlayer < 0.1f) {
+            if(distanceToPlayer < 0.6f) {
                 Player.Instance.TakeDamage();
             }
         }
@@ -338,7 +338,7 @@ public class Zombie : Entity
             if (stepTimer >= SoundPropagationManager.Instance.stepInterval)
             {
                 // Propagate sound at current position
-                SoundPropagationManager.Instance.PropagateSound(transform.position, SoundOrigin.ZOMBIE, 0.6f * speedMultiplier);
+                SoundPropagationManager.Instance.PropagateSound(transform.position, SoundOrigin.ZOMBIE, 1f * speedMultiplier);
                 SoundManager.Instance.PlayRandomSoundClip(stepSounds, transform, SoundType.FOOTSTEPS, SoundFXType.FX, followTarget: transform);
 
                 stepTimer = 0; // Reset timer

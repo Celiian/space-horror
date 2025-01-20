@@ -27,7 +27,7 @@ public class PlayerMovement : Entity
     }
 
     public override void Update() {
-        if (isPaused) return;
+        if (isPaused || !canMove) return;
 
         HandleMovement();
         HandleAnimation();

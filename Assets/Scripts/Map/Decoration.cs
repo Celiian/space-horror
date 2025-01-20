@@ -1,10 +1,14 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 public class Decoration : MonoBehaviour
 {
     [SerializeField]
     public List<GameObject> positions;
+
+    [SerializeField]
+    public bool isChest = false;
 
     private List<Tile> tiles;
     private List<SpriteRenderer> spriteRenderers;
@@ -75,7 +79,7 @@ public class Decoration : MonoBehaviour
         Color color = new Color(newSoundLevel, newSoundLevel, newSoundLevel);
 
 
-        if(!hasBeenSeen)
+        if(!hasBeenSeen || SoundPropagationManager.Instance.debug)
             color = Color.black;
 
         return color;
