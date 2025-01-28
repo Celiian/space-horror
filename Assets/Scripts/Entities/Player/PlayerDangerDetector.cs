@@ -7,7 +7,7 @@ public class PlayerDangerDetector : MonoBehaviour
 {
     [SerializeField] private AudioClip dangerBip;
     [SerializeField] private float dangerDistance = 10f;
-    [SerializeField] private GameObject dangerIndicator;
+    [SerializeField] public GameObject dangerIndicator;
     [SerializeField] private Material dangerIndicatorMaterialPreset;
 
     private List<Zombie> zombies;
@@ -28,7 +28,6 @@ public class PlayerDangerDetector : MonoBehaviour
         entities.Add(angel);
         dangerIndicator.GetComponent<SpriteRenderer>().material = dangerIndicatorMaterialPreset; 
         dangerIndicatorMaterial = dangerIndicator.GetComponent<SpriteRenderer>().material;
-        dangerIndicator.SetActive(true);
     }
 
     private void Update()

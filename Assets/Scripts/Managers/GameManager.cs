@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -15,11 +16,17 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private List<GameObject> objectives;
     [SerializeField] private StorySoundManager storySound;
-
+    [SerializeField] private GameObject playerRespawnPosition;
     private int objectivesLeft = 0;
 
     private void Start() {
         objectivesLeft = objectives.Count;
+    }
+
+    private void Update(){
+        if(Input.GetKeyDown(KeyCode.P)){
+            IntroManager.Instance.SkipIntro();
+        }
     }
 
     public void ObjectiveCompleted(GameObject objective){
@@ -38,4 +45,5 @@ public class GameManager : MonoBehaviour
     public void OneObjectiveCompleted(){
         storySound.TriggerCustomEvent("OneObjectiveCompleted");
     }
+
 }

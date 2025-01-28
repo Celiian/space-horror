@@ -122,9 +122,11 @@ namespace Febucci.UI
 
         private void ClearText()
         {
+            // Ensure currentCharacterCount does not exceed the length of the text
+            currentCharacterCount = Mathf.Min(currentCharacterCount, _textMeshPro.text.Length);
+
             // Remove the current appeared text efficiently
             _textMeshPro.text = _textMeshPro.text.Replace("<noparse>", "").Replace("</noparse>", "")[currentCharacterCount..];
-
 
             // Reset the character count
             currentCharacterCount = 0;

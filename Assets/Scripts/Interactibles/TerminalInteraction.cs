@@ -24,12 +24,17 @@ public class TerminalInteraction : Interactible
 
     private List<Entity> entitiesToUnpause = new List<Entity>();
 
+    private bool didSkip = false;
+
+    private bool isTypewriterFinished = false;
+
     private void Start() {
         interactible = defaultInteractible;
     }
     
     public override void Interact()
     {
+        isInteractible = false;
         isOpen = true;
         terminal.SetActive(true);
         Entity[] entities =  FindObjectsOfType<Entity>();
@@ -49,7 +54,7 @@ public class TerminalInteraction : Interactible
 
     public override bool IsInteractible()
     {
-        return interactible;
+        return interactible && !isOpen;
     }
 
     public override void ToggleInteractible(bool value)
@@ -59,27 +64,39 @@ public class TerminalInteraction : Interactible
 
     private void Update() {
         if (!isOpen) return;
-        if (Input.GetKeyDown(KeyCode.Escape)) {
+        if (terminalPageText.GetComponent<TypewriterByCharacter>().TextAnimator.allLettersShown) {
+            isTypewriterFinished = true;
+        }
+
+        if (PlayerInteraction.Instance.didInteract && (didSkip || isTypewriterFinished)) {
             isOpen = false;
+            didSkip = false;
             terminal.SetActive(false);
+            isTypewriterFinished = false;
             foreach (var entity in entitiesToUnpause) {
                 entity.isPaused = false;
             }
             entitiesToUnpause.Clear();
             onInteractFinished?.Invoke();
+            PlayerInteraction.Instance.didInteract = false;
         }
-         if (Input.GetKeyDown(KeyCode.Space)) {
+        
+         if (PlayerInteraction.Instance.didInteract && !isTypewriterFinished) {
+            didSkip = true;
             terminalPageText.GetComponent<TypewriterByCharacter>().SkipTypewriter();
+            PlayerInteraction.Instance.didInteract = false;
         }
-        if (Input.GetKeyDown(KeyCode.RightArrow)) {
+        if (PlayerInteraction.Instance.didPressNext) {
             currentPageIndex = (currentPageIndex + 1) % pages.Length;
             terminalPageText.text = pages[currentPageIndex];
             UpdateButtons();
+            PlayerInteraction.Instance.didPressNext = false;
         }
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+        if (PlayerInteraction.Instance.didPressPrevious) {
             currentPageIndex = (currentPageIndex - 1 + pages.Length) % pages.Length;
             terminalPageText.text = pages[currentPageIndex];
             UpdateButtons();
+            PlayerInteraction.Instance.didPressPrevious = false;
         }
     }
 

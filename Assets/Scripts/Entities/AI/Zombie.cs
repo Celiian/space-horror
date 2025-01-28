@@ -23,12 +23,17 @@ public class Zombie : Entity
     [FoldoutGroup("Sounds"), SerializeField]
     private AudioClip[] stepSounds;
 
+    [FoldoutGroup("Sounds"), SerializeField]
+    private float soundMultiplier = 1f;
 
     [FoldoutGroup("Stats"), SerializeField]
     private LayerMask visionLayerMask;
 
     [FoldoutGroup("Stats"), SerializeField]
     public float detectionRadius;
+
+    [FoldoutGroup("Stats"), SerializeField]
+    private float hearingTreeshold = 0.4f;
     
     [FoldoutGroup("Stats"), SerializeField]
     public float visionAngle;
@@ -55,7 +60,6 @@ public class Zombie : Entity
     public event Action OnPlayerDiscovered;
     private int currentPatrolIndex = 0;
     private int hearingRadius = 5;
-    private float hearingTreeshold = 0.4f;
     private bool playerDiscovered = false;
 
     #endregion
@@ -158,6 +162,7 @@ public class Zombie : Entity
 
     private void FixedUpdate()
     {
+        if(isPaused) return;
         MoveTowardsTarget(currentTarget);
     }
 
@@ -338,8 +343,8 @@ public class Zombie : Entity
             if (stepTimer >= SoundPropagationManager.Instance.stepInterval)
             {
                 // Propagate sound at current position
-                SoundPropagationManager.Instance.PropagateSound(transform.position, SoundOrigin.ZOMBIE, 1f * speedMultiplier);
-                SoundManager.Instance.PlayRandomSoundClip(stepSounds, transform, SoundType.FOOTSTEPS, SoundFXType.FX, followTarget: transform);
+                SoundPropagationManager.Instance.PropagateSound(transform.position, SoundOrigin.ZOMBIE, 2f * speedMultiplier * soundMultiplier);
+                SoundManager.Instance.PlayRandomSoundClip(stepSounds, transform, SoundType.FOOTSTEPS, SoundFXType.FX, followTarget: transform, additionalAttenuation: soundMultiplier);
 
                 stepTimer = 0; // Reset timer
             }

@@ -84,7 +84,7 @@ public class Angel : Entity
         movementDirection = directionToPlayer;
         float distanceToPlayer = CalcUtils.DistanceToTarget(transform.position, PlayerMovement.Instance.transform.position);
         float soundLevel = SoundPropagationManager.Instance.GetTilesInRadius(transform.position, 3f).SelectMany(tile => tile.soundSources).Sum(sound => sound.soundLevel);
-        if(soundLevel < 0.1f && distanceToPlayer < 0.1f) {
+        if(soundLevel < 0.1f && distanceToPlayer < 0.3f) {
             Player.Instance.TakeDamage();
         }
 

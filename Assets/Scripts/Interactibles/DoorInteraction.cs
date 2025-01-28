@@ -9,19 +9,23 @@ public class DoorInteraction : Interactible
     [SerializeField] private AudioClip closeDoorSound;
     [SerializeField] private bool defaultInteractible = true;
     private bool isOpen = false;
+    private bool startingOpen = false;
     private bool interactible = false;
+    private bool didPlayerInteract = false;
     private List<Entity> entitiesClose = new List<Entity>();
 
     private void Start() {
         interactible = defaultInteractible;
+        startingOpen = isOpen;
         if(isOpen)
             OpenDoor(false);
         else
             CloseDoor(false);
     }
-    
+
     public override void Interact()
     {
+        didPlayerInteract = true;
         isOpen = !isOpen;
         if(isOpen)
             OpenDoor();
@@ -45,7 +49,7 @@ public class DoorInteraction : Interactible
     public void CloseDoor(bool playSound = true)
     {
         // Check if an entity is on the door
-        if(Physics2D.OverlapCircle(transform.position, 0.5f, LayerMask.GetMask("Enemy", "Player"))){
+        if(Physics2D.OverlapCircle(transform.position, 0.7f, LayerMask.GetMask("Enemy", "Player"))){
             isOpen = true;
         }
         openDoor.SetActive(false);
@@ -53,7 +57,7 @@ public class DoorInteraction : Interactible
         SoundPropagationManager.Instance.addWall(transform.position);
         if(playSound){
             SoundManager.Instance.PlaySoundClip(closeDoorSound, transform, SoundManager.SoundType.FX, SoundManager.SoundFXType.FX);
-            SoundPropagationManager.Instance.PropagateSound(transform.position, SoundOrigin.INTERACTIBLE, 0.5f);
+            SoundPropagationManager.Instance.PropagateSound(transform.position, didPlayerInteract ? SoundOrigin.PLAYER : SoundOrigin.INTERACTIBLE, 1f);
         }
         isOpen = false;
     }
@@ -66,14 +70,14 @@ public class DoorInteraction : Interactible
         SoundPropagationManager.Instance.removeWall(transform.position);
         if(playSound){
             SoundManager.Instance.PlaySoundClip(openDoorSound, transform, SoundManager.SoundType.FX, SoundManager.SoundFXType.FX);
-            SoundPropagationManager.Instance.PropagateSound(transform.position, SoundOrigin.INTERACTIBLE, 0.5f);
+            SoundPropagationManager.Instance.PropagateSound(transform.position, didPlayerInteract ? SoundOrigin.PLAYER : SoundOrigin.INTERACTIBLE, 1f);
         }
     }
 
 
     private new void OnTriggerEnter2D(Collider2D other) {
         base.OnTriggerEnter2D(other);
-        if(!defaultInteractible) return;
+        if(!interactible) return;
         if(other.CompareTag("Enemy")){
             entitiesClose.Add(other.GetComponent<Entity>());
             OpenDoor();
@@ -82,7 +86,7 @@ public class DoorInteraction : Interactible
 
     private new void OnTriggerExit2D(Collider2D other) {
         base.OnTriggerExit2D(other);
-        if(!defaultInteractible) return;
+        if(!interactible) return;
         if(other.CompareTag("Enemy")){
             entitiesClose.Remove(other.GetComponent<Entity>());
             if(entitiesClose.Count == 0){
@@ -93,7 +97,7 @@ public class DoorInteraction : Interactible
 
 
     private void Update() {
-        if(!defaultInteractible) return;
+        if(!interactible) return;
 
         if(entitiesClose.Count > 0 && !isOpen){
             OpenDoor();

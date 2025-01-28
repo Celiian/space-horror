@@ -50,6 +50,12 @@ public class StorySoundManager : MonoBehaviour
 
         [VerticalGroup("Settings")]
         [BoxGroup("Settings/Trigger Settings")]
+        [ShowIf(nameof(IsEnemyTrigger))]
+        [Tooltip("Specify a GameObject with a collider.")]
+        public GameObject EnemyTriggerObject;
+
+        [VerticalGroup("Settings")]
+        [BoxGroup("Settings/Trigger Settings")]
         [ShowIf(nameof(IsColliderTrigger))]
         [Tooltip("Specify a GameObject with a collider.")]
         public GameObject TriggerObject;
@@ -85,11 +91,13 @@ public class StorySoundManager : MonoBehaviour
 
         public enum TriggerType
         {
+            EnemyTrigger,
             Collider,
             TimeThreshold,
-            CustomEvent
+            CustomEvent,
         }
 
+        private bool IsEnemyTrigger => Trigger == TriggerType.EnemyTrigger;
         private bool IsColliderTrigger => Trigger == TriggerType.Collider;
         private bool IsTimeTrigger => Trigger == TriggerType.TimeThreshold;
         private bool IsCustomEventTrigger => Trigger == TriggerType.CustomEvent;
@@ -109,9 +117,11 @@ public class StorySoundManager : MonoBehaviour
     [Tooltip("Canvas to display subtitles on.")]
     private Canvas _subtitleCanvas;
 
-    private float _elapsedTime;
+    public float _elapsedTime;
 
     private int _subtitlesDisplayed = 0;
+
+    public bool isPaused = false;
 
     private void Start()
     {
@@ -120,6 +130,7 @@ public class StorySoundManager : MonoBehaviour
 
     private void Update()
     {
+        if(isPaused) return;
         _elapsedTime += Time.deltaTime;
 
         foreach (var sound in StorySounds)
@@ -128,6 +139,9 @@ public class StorySoundManager : MonoBehaviour
 
             switch (sound.Trigger)
             {
+                case StorySound.TriggerType.EnemyTrigger:
+                    CheckEnemyTrigger(sound);
+                    break;
                 case StorySound.TriggerType.Collider:
                     CheckColliderTrigger(sound);
                     break;
@@ -144,7 +158,6 @@ public class StorySoundManager : MonoBehaviour
 
     public void TriggerCustomEvent(string eventName)
     {
-        Debug.Log("TriggerCustomEvent: " + eventName);
         foreach (var sound in StorySounds)
         {
             if (sound.Trigger == StorySound.TriggerType.CustomEvent && sound.CustomEventName == eventName)
@@ -152,6 +165,17 @@ public class StorySoundManager : MonoBehaviour
                 PlaySound(sound);
                 sound.Triggered = true;
             }
+        }
+    }
+
+    private void CheckEnemyTrigger(StorySound sound)
+    {
+         if (sound.EnemyTriggerObject == null || !sound.EnemyTriggerObject.TryGetComponent(out Collider2D collider)) return;
+
+        if (collider.IsTouchingLayers(LayerMask.GetMask("Enemy")))
+        {
+            PlaySound(sound);
+            sound.Triggered = true;
         }
     }
 
@@ -209,5 +233,9 @@ public class StorySoundManager : MonoBehaviour
                 callback.Invoke();
             }
         }
+    }
+
+    public void ResetTime() {
+        _elapsedTime = 0f;
     }
 }

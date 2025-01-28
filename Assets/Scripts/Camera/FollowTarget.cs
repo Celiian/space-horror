@@ -14,7 +14,7 @@ public class FollowTarget : MonoBehaviour
 
     [Button]
     public void CenterOnTarget(){
-        transform.position = target.position;
+        transform.position = new Vector3(target.position.x, target.position.y, transform.position.z);
     }
 }
 

@@ -70,7 +70,7 @@ public class SoundPropagationManager : MonoBehaviour
     private Dictionary<Vector3Int, Tile> tilesByPosition;
     private float lastUpdateTime = 0f;
 
-    private void Start() {
+    public void Init() {
         foreach (var kvp in tilesByPosition)
         {
             kvp.Value.paint(debug);

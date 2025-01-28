@@ -19,6 +19,5 @@ public class Player : MonoBehaviour
         isDead = true;
         SoundManager.Instance.PlaySoundClip(deathSound, transform, SoundManager.SoundType.LOUD_FX, SoundManager.SoundFXType.FX);
         PlayerMovement.Instance.canMove = false;
-        Debug.Log("Player is dead");
     }
 }   

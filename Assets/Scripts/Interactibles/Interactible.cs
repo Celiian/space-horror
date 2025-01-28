@@ -2,6 +2,7 @@ using UnityEngine;
 
 public abstract class Interactible : MonoBehaviour
 {
+    public bool isInteractible = true;
     public abstract void Interact();
 
     public abstract bool IsInteractible();

@@ -1,5 +1,6 @@
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using static SoundManager;
 
 public class PlayerMovement : Entity
@@ -9,7 +10,7 @@ public class PlayerMovement : Entity
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private float speed;
     [SerializeField] private float sprintMultiplier = 1.5f;
-    [SerializeField] private float slowMultiplier = 0.5f;
+    [SerializeField] private float slowMultiplier = 0.7f;
     [SerializeField] private AudioClip[] stepSounds;
     [SerializeField] private PlayerAnimator playerAnimator;
 
@@ -26,18 +27,42 @@ public class PlayerMovement : Entity
         Instance = this;
     }
 
+    public void OnRun(InputAction.CallbackContext context) {
+        if(context.performed) {
+            currentSpeedMultiplier = sprintMultiplier;
+        } else {
+            currentSpeedMultiplier = 1;
+        }
+    }
+
+    public void OnSneak(InputAction.CallbackContext context) {
+        if(context.performed) {
+            currentSpeedMultiplier = slowMultiplier;
+        } else {
+            currentSpeedMultiplier = 1;
+        }
+    }
+
+    public void OnMove(InputAction.CallbackContext context) {
+        movementDirection = context.ReadValue<Vector2>();
+    }
+
     public override void Update() {
-        if (isPaused || !canMove) return;
+        HandleAnimation();
+        if(isPaused || !canMove) {
+            isMoving = false;
+            rb.velocity = Vector2.zero;
+            return;
+        };
 
         HandleMovement();
-        HandleAnimation();
         HandleFootstepSounds();
     }
 
     private Vector2 GetInputMovement() {
-        Vector2 inputVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        if (inputVector.magnitude > 1f) {
-            inputVector.Normalize();
+        // Vector2 inputVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        if (movementDirection.magnitude > 1f) {
+            movementDirection.Normalize();
         }
         
         float currentSpeed = speed;
@@ -50,11 +75,12 @@ public class PlayerMovement : Entity
             currentSpeedMultiplier = slowMultiplier;
         }
         
-        return inputVector * currentSpeed;
+        return movementDirection * currentSpeed;
     }
 
     private void HandleMovement() {
-        Vector2 movement = GetInputMovement();
+        // Vector2 movement = GetInputMovement();
+        Vector2 movement = movementDirection.normalized * speed * currentSpeedMultiplier;
         rb.velocity = movement;
         movementDirection = movement;
         isMoving = movement.magnitude > minMovementThreshold;
@@ -76,13 +102,13 @@ public class PlayerMovement : Entity
         if (isMoving) {
             stepTimer += Time.deltaTime;
             
-            float currentStepInterval = Input.GetKey(KeyCode.LeftShift) 
+            float currentStepInterval = currentSpeedMultiplier == sprintMultiplier 
                 ? SoundPropagationManager.Instance.stepInterval / sprintMultiplier 
                 : SoundPropagationManager.Instance.stepInterval;
 
             if (stepTimer >= currentStepInterval) {
-                SoundPropagationManager.Instance.PropagateSound(transform.position, SoundOrigin.PLAYER, 0.6f * sprintMultiplier);
-                SoundManager.Instance.PlayRandomSoundClip(stepSounds, transform, SoundType.FOOTSTEPS, SoundFXType.FX, followTarget: transform, additionalAttenuation: sprintMultiplier);
+                SoundPropagationManager.Instance.PropagateSound(transform.position, SoundOrigin.PLAYER, 0.8f * currentSpeedMultiplier);
+                SoundManager.Instance.PlayRandomSoundClip(stepSounds, transform, SoundType.FOOTSTEPS, SoundFXType.FX, followTarget: transform, additionalAttenuation: currentSpeedMultiplier);
                 stepTimer = 0;
             }
         } else {
