@@ -1,14 +1,14 @@
 using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using Sirenix.Utilities;
+
 public class PlayerDangerDetector : MonoBehaviour
 {
     [SerializeField] private AudioClip dangerBip;
-    [SerializeField] private float dangerDistance = 10f;
+    [SerializeField] public float dangerDistance = 10f;
     [SerializeField] public GameObject dangerIndicator;
     [SerializeField] private Material dangerIndicatorMaterialPreset;
+
 
     private List<Zombie> zombies;
     private Angel angel;
@@ -17,10 +17,12 @@ public class PlayerDangerDetector : MonoBehaviour
     private float minBeepInterval = 0.5f; // Minimum interval
     private float lastBeepTime;
     private Material dangerIndicatorMaterial;
-    
+    public float closestDistance ;
+
 
     private void Start()
     {
+        closestDistance = dangerDistance;
         zombies = FindObjectsOfType<Zombie>().ToList();
         angel = FindObjectOfType<Angel>();
         entities = new List<Entity>();
@@ -40,13 +42,13 @@ public class PlayerDangerDetector : MonoBehaviour
 
         if(!closestEntity) return;
 
-        float distance = CalcUtils.DistanceToTarget(closestEntity.transform.position, transform.position);
+        closestDistance = CalcUtils.DistanceToTarget(closestEntity.transform.position, transform.position);
 
-        if (distance < dangerDistance)
+        if (closestDistance < dangerDistance)
         {
             // Calculate the beep interval based on the distance
-            beepInterval = Mathf.Lerp(minBeepInterval, 3f, distance / dangerDistance);
-            dangerIndicatorMaterial.SetFloat("_Intensity", Mathf.Lerp(2, 1, distance / dangerDistance));
+            beepInterval = Mathf.Lerp(minBeepInterval, 3f, closestDistance / dangerDistance);
+            dangerIndicatorMaterial.SetFloat("_Intensity", Mathf.Lerp(2, 1, closestDistance / dangerDistance));
 
             if (Time.time - lastBeepTime >= beepInterval)
             {

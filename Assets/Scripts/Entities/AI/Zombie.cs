@@ -170,8 +170,6 @@ public class Zombie : Entity
     private void MoveTowardsTarget(Vector3 target){
         Vector2 direction = (target - transform.position).normalized;
         rb.velocity = direction * moveSpeed * speedMultiplier;
-
-        HandleFootstepSounds();
     }
 
     private void Flip()
@@ -219,6 +217,12 @@ public class Zombie : Entity
     }
 
     private Tile locatePlayerSound(){
+        
+        // When the player is discovered, the zombie can hear him freely in a 3m radius
+        if(playerDiscovered && Vector2.Distance(transform.position, PlayerMovement.Instance.transform.position) < 3f){
+            return SoundPropagationManager.Instance.getClosestTileFromPosition(Player.Instance.transform.position);
+        }
+
         // Get the tiles around the zombie
         List<Tile> tiles = SoundPropagationManager.Instance.GetTilesInRadius(transform.position, hearingRadius);
         Tile highestSoundTile = null;
@@ -334,24 +338,11 @@ public class Zombie : Entity
                 enemyAnimator.PlayAnimation(enemyAnimator.GetAnimationName("Idle", "IdleUp", "IdleDown"));
     }
 
-    private void HandleFootstepSounds()
+    public void HandleFootstepSounds()
     {
-        if (rb.velocity.magnitude > 0.1f)
-        {
-            stepTimer += Time.deltaTime * speedMultiplier;
-            
-            if (stepTimer >= SoundPropagationManager.Instance.stepInterval)
-            {
-                // Propagate sound at current position
-                SoundPropagationManager.Instance.PropagateSound(transform.position, SoundOrigin.ZOMBIE, 2f * speedMultiplier * soundMultiplier);
-                SoundManager.Instance.PlayRandomSoundClip(stepSounds, transform, SoundType.FOOTSTEPS, SoundFXType.FX, followTarget: transform, additionalAttenuation: soundMultiplier);
-
-                stepTimer = 0; // Reset timer
-            }
-        } else {
-            // Reset timer when not moving
-            stepTimer = 0;
-        }
+        // Propagate sound at current position
+        SoundPropagationManager.Instance.PropagateSound(transform.position, SoundOrigin.ZOMBIE, 2f * speedMultiplier * soundMultiplier);
+        SoundManager.Instance.PlayRandomSoundClip(stepSounds, transform, SoundType.FOOTSTEPS, SoundFXType.FX, followTarget: transform, additionalAttenuation: 2 * soundMultiplier);
     }
     #endregion
 

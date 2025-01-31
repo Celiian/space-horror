@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 
 public class GameManager : MonoBehaviour
@@ -23,8 +24,8 @@ public class GameManager : MonoBehaviour
         objectivesLeft = objectives.Count;
     }
 
-    private void Update(){
-        if(Input.GetKeyDown(KeyCode.P)){
+    public void OnInteract(InputAction.CallbackContext context) {
+        if(context.performed && !IntroManager.Instance.didSkipIntro){
             IntroManager.Instance.SkipIntro();
         }
     }

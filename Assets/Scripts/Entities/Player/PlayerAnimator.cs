@@ -13,6 +13,7 @@ public class PlayerAnimator : MonoBehaviour
 
 	public bool isLateral => Mathf.Abs(_previousMovementDirection.normalized.x) > 0.75f;
 	public bool isUpward => _previousMovementDirection.normalized.y > 0.1f;
+	public bool isDownward => _previousMovementDirection.normalized.y < -0.1f;
 
 	public string currentAnimation = "Idle";
 
@@ -55,7 +56,7 @@ public class PlayerAnimator : MonoBehaviour
 				_direction = Direction.Lateral;
 			else if (isUpward)
 				_direction = Direction.Up;
-			else
+			else if (isDownward)
 				_direction = Direction.Down;
 		}
 	}

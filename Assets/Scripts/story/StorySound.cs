@@ -5,6 +5,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEngine.Events;
 using TMPro;
+using Febucci.UI.Core;
 
 public class StorySoundManager : MonoBehaviour
 {
@@ -166,6 +167,11 @@ public class StorySoundManager : MonoBehaviour
                     break;
             }
         }
+
+        if(audioSources.Count == 0 && _illuminateRoomCoroutine != null) {
+            StopCoroutine(_illuminateRoomCoroutine);
+            _illuminateRoomCoroutine = null;
+        }
     }
 
     public void TriggerCustomEvent(string eventName)
@@ -209,9 +215,9 @@ public class StorySoundManager : MonoBehaviour
         if (subtitleTextUI != null)
         {
             _subtitleCanvas.enabled = true;
-            subtitleTextUI.text = sound.SubtitleText;
 
             _subtitlesDisplayed++;
+            subtitleTextUI.GetComponent<TypewriterCore>().ShowText(sound.SubtitleText);
         }
 
         AudioSource audioSource = SoundManager.Instance.PlaySoundClip(
@@ -242,15 +248,11 @@ public class StorySoundManager : MonoBehaviour
         if (_subtitlesDisplayed == 0)
         {
             _subtitleCanvas.enabled = false;
-            subtitleTextUI.text = "";
+            subtitleTextUI.GetComponent<TAnimCore>().SetText("");
         }
 
         if(audioSources.Contains(audioSource)) {
             audioSources.Remove(audioSource);
-            if(audioSources.Count == 0) {
-                StopCoroutine(_illuminateRoomCoroutine);
-                _illuminateRoomCoroutine = null;
-            }
         }
 
         if (callbacks != null)

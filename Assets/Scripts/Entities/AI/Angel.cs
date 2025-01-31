@@ -84,7 +84,9 @@ public class Angel : Entity
         movementDirection = directionToPlayer;
         float distanceToPlayer = CalcUtils.DistanceToTarget(transform.position, PlayerMovement.Instance.transform.position);
         float soundLevel = SoundPropagationManager.Instance.GetTilesInRadius(transform.position, 3f).SelectMany(tile => tile.soundSources).Sum(sound => sound.soundLevel);
-        if(soundLevel < 0.1f && distanceToPlayer < 0.3f) {
+        Debug.Log(distanceToPlayer < 1.1f);
+        Debug.Log(soundLevel < 0.1f);
+        if(soundLevel < 0.1f && distanceToPlayer < 1.1f) {
             Player.Instance.TakeDamage();
         }
 
@@ -117,7 +119,7 @@ public class Angel : Entity
         transform.localScale = scale;
     }
 
-    private void initPathToPlayer(){
+    public void initPathToPlayer(){
         TileNode startNode = PathFinding.Instance.FindNodeCloseToPosition(transform.position);
         TileNode endNode = PathFinding.Instance.FindNodeCloseToPosition(PlayerMovement.Instance.transform.position);
         currentPath = PathFinding.Instance.FindPath(startNode, endNode);
@@ -125,7 +127,7 @@ public class Angel : Entity
 
     private void updatePathToPlayer()
     {
-        Vector3 startingPos = currentPath == null || currentPath.Count == 0 ? transform.position : currentPath.First().GetPosition();
+        Vector3 startingPos = transform.position;
         TileNode startNode = PathFinding.Instance.FindNodeCloseToPosition(startingPos);
         TileNode endNode = PathFinding.Instance.FindNodeCloseToPosition(PlayerMovement.Instance.transform.position);
         currentPath = PathFinding.Instance.FindPath(startNode, endNode);
@@ -140,5 +142,11 @@ public class Angel : Entity
     }
 
     #endregion
+
+    [Button]
+    public void Teleport(GameObject target){
+        transform.position = target.transform.position;
+        currentPath = null;
+    }
 
 }

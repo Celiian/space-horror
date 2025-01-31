@@ -91,13 +91,13 @@ public class ObjectivesManager : MonoBehaviour
 
         if(nextObjective != null)
         {
-
+            SoundManager.Instance.PlaySoundClip(minorObjectiveCompleteSound, PlayerMovement.Instance.transform, SoundManager.SoundType.FX, SoundManager.SoundFXType.FX);
+            
             if(objectives[_currentMajorObjectiveIndex].displayAllObjectives)
                 return;
 
             // If there is a next minor objective, display it in the list.
             InstantiateObjective(nextObjective, false);
-            SoundManager.Instance.PlaySoundClip(minorObjectiveCompleteSound, PlayerMovement.Instance.transform, SoundManager.SoundType.FX, SoundManager.SoundFXType.FX);
         }
         else 
         {

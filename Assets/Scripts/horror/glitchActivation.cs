@@ -27,6 +27,10 @@ public class GlitchActivation : MonoBehaviour
     private SoundManager.SoundType soundType;
 
     [FoldoutGroup("Audio Settings")]
+    [SerializeField, Tooltip("If true, the sound will be propagated.")]
+    private bool propagateSound = true;
+
+    [FoldoutGroup("Audio Settings")]
     [SerializeField, Tooltip("GameObject that emits the sound.")]
     private GameObject soundEmitter;
 
@@ -52,7 +56,10 @@ public class GlitchActivation : MonoBehaviour
             if(audioClip != null)
             {
                 SoundManager.Instance.PlaySoundClip(audioClip, soundEmitter.transform, soundType, SoundManager.SoundFXType.FX);
-                SoundPropagationManager.Instance.PropagateSound(soundEmitter.transform.position, SoundOrigin.ITEM, volumeAttenuation);
+                if(propagateSound)
+                {
+                    SoundPropagationManager.Instance.PropagateSound(soundEmitter.transform.position, SoundOrigin.ITEM, volumeAttenuation);
+                }
             }
 
             if(isOneTime)

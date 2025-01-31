@@ -222,10 +222,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 56ba4165c7d90432e9e44085471844f9, type: 3}
   - {fileID: 8300000, guid: 865f67fe53531480d8e06e7b4540a375, type: 3}
   - {fileID: 8300000, guid: df2dde5b215a64149b6fbcb8a6cf3879, type: 3}
+  soundMultiplier: 2
   visionLayerMask:
     serializedVersion: 2
     m_Bits: 5120
   detectionRadius: 15
+  hearingTreeshold: 0.4
   visionAngle: 160
   moveSpeed: 2
   patrolPoints: []
@@ -261,6 +263,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   positions:
   - {fileID: 7398433719287888345}
+  isChest: 0
   isBlocking: 0
   maxLightLevel: 0.3
 --- !u!1 &7398433719287888345

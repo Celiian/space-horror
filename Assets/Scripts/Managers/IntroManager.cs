@@ -12,6 +12,8 @@ using UnityEngine.Rendering.Universal;
 public class IntroManager : MonoBehaviour {
     public static IntroManager Instance;
     [FoldoutGroup("References")]
+    [SerializeField] private ShouldSkipIntro shouldSkipIntro;
+    [FoldoutGroup("References")]
     [SerializeField] private StorySoundManager storySoundManager;
     [FoldoutGroup("References")]
     [SerializeField] private FollowTarget followTarget;
@@ -25,6 +27,8 @@ public class IntroManager : MonoBehaviour {
     [SerializeField] private GameObject objectiveUi;
     [FoldoutGroup("References")]
     [SerializeField] private GameObject objectiveIndicator;
+    [FoldoutGroup("References")]
+    [SerializeField] private PlayerAliveSounds playerAliveSounds;
 
 
 
@@ -75,8 +79,10 @@ public class IntroManager : MonoBehaviour {
     private bool _isRoomIlluminated = true;
     private Coroutine introCoroutine;
     public bool skipIntro = false;
+    public bool didSkipIntro = false;
     private bool _isKeyboardInputShown = false;
     public bool isInIntro = true;
+    private bool didTeleport = false;
 
     private Sequence teleportSequence;
     private Sequence dissolveSequence;
@@ -112,13 +118,12 @@ public class IntroManager : MonoBehaviour {
         storySoundManager.isPaused = true;
         PlayerMovement.Instance.isPaused = true;
         introCoroutine = StartCoroutine(StartIntro());
+        if(shouldSkipIntro.shouldSkipIntro){
+            SkipIntro();
+        }
     }
 
     public void Update(){
-        if(skipIntro){
-            SkipIntro();
-        }
-
         if(_isKeyboardInputShown){
             if(PlayerMovement.Instance.isMoving){
                 _isKeyboardInputShown = false;
@@ -128,6 +133,9 @@ public class IntroManager : MonoBehaviour {
     }
 
     public void SkipIntro(){
+        if(didSkipIntro) return;
+        didSkipIntro = true;
+        _onSkipIntro.Invoke();
         isInIntro = false;
         // Show the objective ui
         objectiveUi.SetActive(true);
@@ -146,7 +154,7 @@ public class IntroManager : MonoBehaviour {
         _isRoomIlluminated = false;
 
         // Set the story sound manager elapsed time
-        storySoundManager._elapsedTime = 25;
+        storySoundManager._elapsedTime = 30;
 
         // Kill the camera sequence
         cameraSequence.Kill();
@@ -172,19 +180,19 @@ public class IntroManager : MonoBehaviour {
 
         // Stop the intro sounds
         foreach(var source in introSources){
-            source.Stop();
+            if(source != null) source.Stop();
         }
-        sawAudioSource.Stop();
+        if(sawAudioSource != null && sawAudioSource.isPlaying) sawAudioSource.Stop();
 
         // Skip the objectives
-        ObjectivesManager.Instance.SkipCurrentObjective();
-
+        if(!didTeleport) {
+            ObjectivesManager.Instance.SkipCurrentObjective();
+        }
     }
 
 
     public IEnumerator StartIntro() {
         // Init Intro variables and managers
-        SoundPropagationManager.Instance.Init();
         volume.profile.TryGet(out ColorAdjustments colorAdjustments);
         colorAdjustments.saturation.value = 0;
         float saturationDuration = sawStarting.length + violin.length + sawEnding.length;
@@ -203,7 +211,8 @@ public class IntroManager : MonoBehaviour {
         
         // Change the saturation gradually to simulate the player's vision being removed
         saturationSequence = DOTween.Sequence();
-        saturationSequence.Append(DOTween.To(() => 0, (x) => colorAdjustments.saturation.value = x, -80, saturationDuration));
+        saturationSequence.Append(DOTween.To(() => colorAdjustments.saturation.value, (x) => colorAdjustments.saturation.value = x, -80, saturationDuration));
+        saturationSequence.Join(DOTween.To(() => playerAliveSounds.overrideHeartbeatBpm, (x) => playerAliveSounds.overrideHeartbeatBpm = x, 200, saturationDuration));
         saturationSequence.Play();
 
         // Play the violin and saw sounds
@@ -221,8 +230,9 @@ public class IntroManager : MonoBehaviour {
         yield return new WaitForSeconds(sawEnding.length);
 
         // Lore explanation of why the player can still "see"
+        SoundPropagationManager.Instance.Init();
         introSources.Add(PlaySound(youAreNowBlind, "You are now blind, but don't worry—I've enhanced your hearing and provided a visualization to help.", 0.6f));
-
+        DOTween.To(() => playerAliveSounds.overrideHeartbeatBpm, (x) => playerAliveSounds.overrideHeartbeatBpm = x, 60, youAreNowBlind.length).OnComplete(() => playerAliveSounds.overrideHeartbeatBpm = 0);
         // Disable the room illumination because the player is blind now
         _isRoomIlluminated = false;
 
@@ -254,6 +264,7 @@ public class IntroManager : MonoBehaviour {
 
 
     private IEnumerator TeleportPlayerCoroutine() {
+        didTeleport = true;
         isInIntro = true;
         objectiveUi.SetActive(false);
         objectiveIndicator.SetActive(false);

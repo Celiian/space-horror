@@ -34,7 +34,7 @@ public class SoundManager : MonoBehaviour
             { SoundType.FOOTSTEPS, 0.003f },
             { SoundType.MONSTER, 0.06f },
             { SoundType.WHISPERS, 0.015f },
-            { SoundType.BREATHING, 0.02f },
+            { SoundType.BREATHING, 0.005f },
             { SoundType.DOOR_CREAK, 0.025f }
         };
 

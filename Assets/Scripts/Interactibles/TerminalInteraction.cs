@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using Febucci.UI;
+using Febucci.UI.Core;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-
 public class TerminalInteraction : Interactible
 {
     [SerializeField] private GameObject terminal;
@@ -28,13 +28,19 @@ public class TerminalInteraction : Interactible
 
     private bool isTypewriterFinished = false;
 
+    private TypewriterCore typewriter;
+    private TAnimCore textAnimator;
+
     private void Start() {
         interactible = defaultInteractible;
+        typewriter = terminalPageText.GetComponent<TypewriterByCharacter>();
+        textAnimator = terminalPageText.GetComponent<TAnimCore>();
     }
     
     public override void Interact()
     {
         isInteractible = false;
+        isTypewriterFinished = false;
         isOpen = true;
         terminal.SetActive(true);
         Entity[] entities =  FindObjectsOfType<Entity>();
@@ -46,7 +52,8 @@ public class TerminalInteraction : Interactible
         }
 
         terminalNameText.text = terminalName;
-        terminalPageText.text = pages[currentPageIndex];
+        typewriter.ShowText(pages[currentPageIndex]);
+
         if(onInteract != null)
             onInteract.Invoke();
             onInteract = null;
@@ -65,13 +72,13 @@ public class TerminalInteraction : Interactible
 
     private void Update() {
         if (!isOpen) return;
-        if (terminalPageText.GetComponent<TypewriterByCharacter>().TextAnimator.allLettersShown) {
+        if (typewriter.TextAnimator.allLettersShown) {
             isTypewriterFinished = true;
         }
 
         if (PlayerInteraction.Instance.didInteract && !isTypewriterFinished) {
             didSkip = true;
-            terminalPageText.GetComponent<TypewriterByCharacter>().SkipTypewriter();
+            typewriter.SkipTypewriter();
             PlayerInteraction.Instance.didInteract = false;
         }
         else if (PlayerInteraction.Instance.didInteract && (didSkip || isTypewriterFinished)) {
@@ -85,7 +92,7 @@ public class TerminalInteraction : Interactible
             onInteractFinished?.Invoke();
             onInteractFinished = null;
             PlayerInteraction.Instance.didInteract = false;
-            terminalPageText.text = "";
+            textAnimator.SetText("");
             terminal.SetActive(false);
         }
         
@@ -108,4 +115,8 @@ public class TerminalInteraction : Interactible
         nextPageButton.SetActive(currentPageIndex < pages.Length - 1);
         previousPageButton.SetActive(currentPageIndex > 0);
     }
-}   
+}
+
+internal class TextAnimator
+{
+}

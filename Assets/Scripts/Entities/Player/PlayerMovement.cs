@@ -1,4 +1,4 @@
-using Unity.VisualScripting.Dependencies.NCalc;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static SoundManager;
@@ -7,37 +7,50 @@ public class PlayerMovement : Entity
 {
     public static PlayerMovement Instance { get; private set; }
 
-    [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private float speed;
-    [SerializeField] private float sprintMultiplier = 1.5f;
-    [SerializeField] private float slowMultiplier = 0.7f;
-    [SerializeField] private AudioClip[] stepSounds;
-    [SerializeField] private PlayerAnimator playerAnimator;
+    [FoldoutGroup("Movement Settings"), SerializeField] private Rigidbody2D rb;
+    [FoldoutGroup("Movement Settings"), SerializeField] private float speed;
+    [FoldoutGroup("Movement Settings"), SerializeField] public float sprintMultiplier = 1.5f;
+    [FoldoutGroup("Movement Settings"), SerializeField] public float slowMultiplier = 0.7f;
+    [FoldoutGroup("Audio Settings"), SerializeField] private AudioClip[] stepSounds;
+    [FoldoutGroup("Animation Settings"), SerializeField] private PlayerAnimator playerAnimator;
+    [FoldoutGroup("Hearing Settings"), SerializeField] public float hearingRadius = 15;
 
+
+    [ReadOnly]
     public bool canMove = true;
+    [ReadOnly]
     public bool isCrouching = false;
-    
-    public Vector2 movementDirection;
+    [ReadOnly]
     public bool isMoving = false;
-    public float hearingRadius = 15;
-    private float minMovementThreshold = 0.1f;
+    [ReadOnly]
     public float currentSpeedMultiplier = 1;
+    [ReadOnly]
+    public Vector2 movementDirection;
+    
+    private float minMovementThreshold = 0.1f;
+    private float previousSpeedMultiplier = 1;
+
+
     private void Awake() {
         Instance = this;
     }
 
     public void OnRun(InputAction.CallbackContext context) {
         if(context.performed) {
+            previousSpeedMultiplier = 1;
             currentSpeedMultiplier = sprintMultiplier;
         } else {
+            previousSpeedMultiplier = sprintMultiplier;
             currentSpeedMultiplier = 1;
         }
     }
 
     public void OnSneak(InputAction.CallbackContext context) {
         if(context.performed) {
+            previousSpeedMultiplier = 1;
             currentSpeedMultiplier = slowMultiplier;
         } else {
+            previousSpeedMultiplier = slowMultiplier;
             currentSpeedMultiplier = 1;
         }
     }
@@ -66,7 +79,8 @@ public class PlayerMovement : Entity
 
     private void HandleAnimation() {
         if (isMoving) {
-            if (playerAnimator.ShouldAnimateAgain() || playerAnimator.currentAnimation != playerAnimator.GetAnimationName("Walk", "WalkUp", "WalkDown")) {
+            if (playerAnimator.ShouldAnimateAgain() || playerAnimator.currentAnimation != playerAnimator.GetAnimationName("Walk", "WalkUp", "WalkDown") || previousSpeedMultiplier != currentSpeedMultiplier) {
+                previousSpeedMultiplier = currentSpeedMultiplier;
                 playerAnimator.PlayAnimation(playerAnimator.GetAnimationName("Walk", "WalkUp", "WalkDown"), currentSpeedMultiplier);
             }
         } else {

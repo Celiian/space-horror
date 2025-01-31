@@ -1,8 +1,9 @@
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class Entity : MonoBehaviour
 {
-    public bool isPaused = false;
+    [FoldoutGroup("Entity State"), SerializeField] public bool isPaused = false;
 
     public void Pause() {
         isPaused = true;
