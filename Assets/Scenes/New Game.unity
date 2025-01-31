@@ -80993,6 +80993,26 @@ PrefabInstance:
       propertyPath: interactionDisplay
       value: 
       objectReference: {fileID: 845821445}
+    - target: {fileID: 2187073209383179986, guid: 2e73ffc3414ff4ab3924b46f027dddc1, type: 3}
+      propertyPath: sprintCooldown
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2187073209383179986, guid: 2e73ffc3414ff4ab3924b46f027dddc1, type: 3}
+      propertyPath: sprintMultiplier
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2187073209383179986, guid: 2e73ffc3414ff4ab3924b46f027dddc1, type: 3}
+      propertyPath: sprintStartSound
+      value: 
+      objectReference: {fileID: 8300000, guid: f48c93aa828db44489ea71f9952565c1, type: 3}
+    - target: {fileID: 2187073209383179986, guid: 2e73ffc3414ff4ab3924b46f027dddc1, type: 3}
+      propertyPath: sprintResetEndSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 64a449485b87345d5976e54f9dc6a307, type: 3}
+    - target: {fileID: 2187073209383179986, guid: 2e73ffc3414ff4ab3924b46f027dddc1, type: 3}
+      propertyPath: sprintResetLoopSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 7088ec13b66e04bf0847e94820236a6e, type: 3}
     - target: {fileID: 2878389643303082795, guid: 2e73ffc3414ff4ab3924b46f027dddc1, type: 3}
       propertyPath: _objectiveIndicatorTarget
       value: 

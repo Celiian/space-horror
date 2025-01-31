@@ -229,7 +229,7 @@ MonoBehaviour:
   detectionRadius: 15
   hearingTreeshold: 0.4
   visionAngle: 160
-  moveSpeed: 2
+  moveSpeed: 2.5
   patrolPoints: []
   movementDirection: {x: 0, y: 0, z: 0}
   debug: 0
