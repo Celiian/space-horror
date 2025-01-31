@@ -31,7 +31,7 @@ public class SoundManager : MonoBehaviour
             { SoundType.FX, 0.01f },
             { SoundType.LOUD_FX, 0.08f },
             { SoundType.MUSIC, 0.05f },
-            { SoundType.FOOTSTEPS, 0.005f },
+            { SoundType.FOOTSTEPS, 0.003f },
             { SoundType.MONSTER, 0.06f },
             { SoundType.WHISPERS, 0.015f },
             { SoundType.BREATHING, 0.02f },

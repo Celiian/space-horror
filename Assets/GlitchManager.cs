@@ -59,6 +59,7 @@ public class GlitchManager : MonoBehaviour
         glitchSequence.Append(DOTween.To(() => noiseAmount, x => noiseAmount = x, originalNoise, halfDuration));
         glitchSequence.Join(DOTween.To(() => glitchStrength, x => glitchStrength = x, originalGlitch, halfDuration));
         glitchSequence.Join(DOTween.To(() => scanLinesStrength, x => scanLinesStrength = x, originalScanLines, halfDuration));
+        glitchSequence.AppendCallback(() => SetGlitch(0, 0, 0.6f));
 
         // Optionally, you can set the sequence to play automatically
         glitchSequence.Play();

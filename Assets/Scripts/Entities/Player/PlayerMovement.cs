@@ -20,7 +20,6 @@ public class PlayerMovement : Entity
     public Vector2 movementDirection;
     public bool isMoving = false;
     public float hearingRadius = 15;
-    private float stepTimer = 0;
     private float minMovementThreshold = 0.1f;
     public float currentSpeedMultiplier = 1;
     private void Awake() {
@@ -56,30 +55,9 @@ public class PlayerMovement : Entity
         };
 
         HandleMovement();
-        HandleFootstepSounds();
-    }
-
-    private Vector2 GetInputMovement() {
-        // Vector2 inputVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        if (movementDirection.magnitude > 1f) {
-            movementDirection.Normalize();
-        }
-        
-        float currentSpeed = speed;
-        currentSpeedMultiplier = 1;
-        if (Input.GetKey(KeyCode.LeftShift)) {
-            currentSpeed *= sprintMultiplier;
-            currentSpeedMultiplier = sprintMultiplier;
-        } else if (Input.GetKey(KeyCode.LeftControl)) {
-            currentSpeed *= slowMultiplier;
-            currentSpeedMultiplier = slowMultiplier;
-        }
-        
-        return movementDirection * currentSpeed;
     }
 
     private void HandleMovement() {
-        // Vector2 movement = GetInputMovement();
         Vector2 movement = movementDirection.normalized * speed * currentSpeedMultiplier;
         rb.velocity = movement;
         movementDirection = movement;
@@ -89,7 +67,7 @@ public class PlayerMovement : Entity
     private void HandleAnimation() {
         if (isMoving) {
             if (playerAnimator.ShouldAnimateAgain() || playerAnimator.currentAnimation != playerAnimator.GetAnimationName("Walk", "WalkUp", "WalkDown")) {
-                playerAnimator.PlayAnimation(playerAnimator.GetAnimationName("Walk", "WalkUp", "WalkDown"), Input.GetKey(KeyCode.LeftShift) ? sprintMultiplier : 1f);
+                playerAnimator.PlayAnimation(playerAnimator.GetAnimationName("Walk", "WalkUp", "WalkDown"), currentSpeedMultiplier);
             }
         } else {
             if (playerAnimator.ShouldAnimateAgain() || playerAnimator.currentAnimation != playerAnimator.GetAnimationName("Idle", "IdleUp", "IdleDown")) {
@@ -98,29 +76,11 @@ public class PlayerMovement : Entity
         }
     }
 
-    private void HandleFootstepSounds() {
-        if (isMoving) {
-            stepTimer += Time.deltaTime;
-            
-            float currentStepInterval = currentSpeedMultiplier == sprintMultiplier 
-                ? SoundPropagationManager.Instance.stepInterval / sprintMultiplier 
-                : SoundPropagationManager.Instance.stepInterval;
-
-            if (stepTimer >= currentStepInterval) {
-                SoundPropagationManager.Instance.PropagateSound(transform.position, SoundOrigin.PLAYER, 0.8f * currentSpeedMultiplier);
-                SoundManager.Instance.PlayRandomSoundClip(stepSounds, transform, SoundType.FOOTSTEPS, SoundFXType.FX, followTarget: transform, additionalAttenuation: currentSpeedMultiplier);
-                stepTimer = 0;
-            }
-        } else {
-            stepTimer = 0;
+    public void HandleFootstepSounds() {
+        if(isMoving) {
+            SoundPropagationManager.Instance.PropagateSound(transform.position, SoundOrigin.PLAYER, 0.8f * currentSpeedMultiplier);
+            SoundManager.Instance.PlayRandomSoundClip(stepSounds, transform, SoundType.FOOTSTEPS, SoundFXType.FX, followTarget: transform, additionalAttenuation: currentSpeedMultiplier);
         }
     }
 
-    public int GetDirectionInt() {
-        if (rb.velocity.y > 0) return 0;
-        if (rb.velocity.y < 0) return 1;
-        if (rb.velocity.x < 0) return 2;
-        if (rb.velocity.x > 0) return 3;
-        return 0;
-    }
 }

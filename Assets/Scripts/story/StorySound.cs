@@ -29,6 +29,11 @@ public class StorySoundManager : MonoBehaviour
         [VerticalGroup("Settings")]
         [BoxGroup("Settings/General Settings")]
         [LabelWidth(100)]
+        public bool PropagateOnce;
+
+        [VerticalGroup("Settings")]
+        [BoxGroup("Settings/General Settings")]
+        [LabelWidth(100)]
         public GameObject PropagationSource;
 
         [VerticalGroup("Settings")]
@@ -123,9 +128,16 @@ public class StorySoundManager : MonoBehaviour
 
     public bool isPaused = false;
 
+    private const float TimeThreshold = 0.5f; // Define a small threshold value
+    
+    private List<AudioSource> audioSources = new List<AudioSource>();
+
+    private Coroutine _illuminateRoomCoroutine;
+
     private void Start()
     {
         _subtitleCanvas.enabled = false;
+        _illuminateRoomCoroutine = StartCoroutine(illuminateRoom());
     }
 
     private void Update()
@@ -146,7 +158,7 @@ public class StorySoundManager : MonoBehaviour
                     CheckColliderTrigger(sound);
                     break;
                 case StorySound.TriggerType.TimeThreshold:
-                    if (_elapsedTime >= sound.TriggerTime)
+                    if (Mathf.Abs(_elapsedTime - sound.TriggerTime) <= TimeThreshold)
                     {
                         PlaySound(sound);
                         sound.Triggered = true;
@@ -212,7 +224,14 @@ public class StorySoundManager : MonoBehaviour
         StartCoroutine(WaitForSoundToFinish(audioSource, sound.OnSoundFinished));
 
         if (sound.PropagateSound)
-            SoundPropagationManager.Instance.PropagateSound(sound.PropagationSource.transform.position, sound.SoundOrigin, sound.Attenuation);
+            if(!sound.PropagateOnce) {
+                audioSources.Add(audioSource);
+                if(_illuminateRoomCoroutine == null) {
+                    _illuminateRoomCoroutine = StartCoroutine(illuminateRoom());
+                }
+            }
+            else
+                SoundPropagationManager.Instance.PropagateSound(sound.PropagationSource.transform.position, sound.SoundOrigin, sound.Attenuation);
     }
 
     private IEnumerator WaitForSoundToFinish(AudioSource audioSource, UnityEvent[] callbacks)
@@ -226,6 +245,14 @@ public class StorySoundManager : MonoBehaviour
             subtitleTextUI.text = "";
         }
 
+        if(audioSources.Contains(audioSource)) {
+            audioSources.Remove(audioSource);
+            if(audioSources.Count == 0) {
+                StopCoroutine(_illuminateRoomCoroutine);
+                _illuminateRoomCoroutine = null;
+            }
+        }
+
         if (callbacks != null)
         {
             foreach (var callback in callbacks)
@@ -237,5 +264,13 @@ public class StorySoundManager : MonoBehaviour
 
     public void ResetTime() {
         _elapsedTime = 0f;
+    }
+
+
+    private IEnumerator illuminateRoom() {
+        while (true){
+            yield return new WaitForSeconds(0.4f);
+            SoundPropagationManager.Instance.PropagateSound(PlayerMovement.Instance.transform.position, SoundOrigin.PLAYER, 1);
+        }
     }
 }

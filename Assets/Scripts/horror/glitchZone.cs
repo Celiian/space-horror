@@ -60,7 +60,7 @@ public class GlitchZone : MonoBehaviour
             if(glitchSequence != null) {
                 glitchSequence.Kill();
                 glitchSequence = null;
-                GlitchManager.Instance.SetGlitch(0, 0, 1);
+                GlitchManager.Instance.SetGlitch(0, 0, 0.6f);
             }
         }
     }

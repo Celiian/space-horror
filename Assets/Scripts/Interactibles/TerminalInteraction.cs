@@ -49,6 +49,7 @@ public class TerminalInteraction : Interactible
         terminalPageText.text = pages[currentPageIndex];
         if(onInteract != null)
             onInteract.Invoke();
+            onInteract = null;
         UpdateButtons();
     }
 
@@ -68,24 +69,26 @@ public class TerminalInteraction : Interactible
             isTypewriterFinished = true;
         }
 
-        if (PlayerInteraction.Instance.didInteract && (didSkip || isTypewriterFinished)) {
+        if (PlayerInteraction.Instance.didInteract && !isTypewriterFinished) {
+            didSkip = true;
+            terminalPageText.GetComponent<TypewriterByCharacter>().SkipTypewriter();
+            PlayerInteraction.Instance.didInteract = false;
+        }
+        else if (PlayerInteraction.Instance.didInteract && (didSkip || isTypewriterFinished)) {
             isOpen = false;
             didSkip = false;
-            terminal.SetActive(false);
             isTypewriterFinished = false;
             foreach (var entity in entitiesToUnpause) {
                 entity.isPaused = false;
             }
             entitiesToUnpause.Clear();
             onInteractFinished?.Invoke();
+            onInteractFinished = null;
             PlayerInteraction.Instance.didInteract = false;
+            terminalPageText.text = "";
+            terminal.SetActive(false);
         }
         
-         if (PlayerInteraction.Instance.didInteract && !isTypewriterFinished) {
-            didSkip = true;
-            terminalPageText.GetComponent<TypewriterByCharacter>().SkipTypewriter();
-            PlayerInteraction.Instance.didInteract = false;
-        }
         if (PlayerInteraction.Instance.didPressNext) {
             currentPageIndex = (currentPageIndex + 1) % pages.Length;
             terminalPageText.text = pages[currentPageIndex];

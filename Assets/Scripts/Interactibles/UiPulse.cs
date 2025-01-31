@@ -4,6 +4,8 @@ using UnityEngine; // Make sure to include the DOTween namespace
 public class UiPulse : MonoBehaviour
 {
     public RectTransform uiElement; // Reference to the UI element you want to scale
+    public float pulseDuration = 0.5f;
+    public float pulseScale = 1.2f;
 
     void Start()
     {
@@ -14,6 +16,6 @@ public class UiPulse : MonoBehaviour
     void Pulse()
     {
         // Animate the scale to 1.1 over 0.5 seconds, then back to 0.9 over 0.5 seconds, and loop
-        uiElement.DOScale(1.2f, 0.5f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
+        uiElement.DOScale(pulseScale, pulseDuration).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
     }
 }
